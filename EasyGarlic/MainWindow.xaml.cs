@@ -18,9 +18,24 @@ namespace EasyGarlic {
     /// Interaction logic for MainWindow.xaml
     /// </summary>
     public partial class MainWindow : Window {
+
+        Command cmd;
+
         public MainWindow()
         {
             InitializeComponent();
+            cmd = new Command();
+            cmd.Setup();
+        }
+
+        private void Start_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void MiningType_Click(object sender, RoutedEventArgs e)
+        {
+
         }
     }
 }

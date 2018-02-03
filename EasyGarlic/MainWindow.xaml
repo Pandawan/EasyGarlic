@@ -1,12 +1,34 @@
-﻿<Window x:Class="EasyGarlic.MainWindow"
+﻿<Window x:Name="EasyGarlicWindow" x:Class="EasyGarlic.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:EasyGarlic"
         mc:Ignorable="d"
-        Title="MainWindow" Height="350" Width="525">
+        Title="EasyGarlic" Height="400" Width="600" ResizeMode="CanMinimize">
     <Grid>
-        
+        <Image Margin="10,10,457,313" Source="images/nicehash-logo.png"/>
+        <Rectangle Fill="#FFEAEAEA" Margin="10,63,10,100"/>
+        <Rectangle Fill="#FF3F3F46" Height="40" VerticalAlignment="Bottom"/>
+        <TextBlock Margin="10,0,10,10" TextWrapping="Wrap" Height="20" VerticalAlignment="Bottom" FontSize="14" Foreground="White" Text="Info"/>
+        <Button Content="Start" Margin="172,0,172,45" FontSize="18" Height="50" VerticalAlignment="Bottom"  Click="Start_Click"/>
+        <Label Content="Address:" HorizontalAlignment="Left" Margin="25,73,0,0" VerticalAlignment="Top" FontSize="14"/>
+        <TextBox HorizontalAlignment="Left" Height="23" Margin="93,77,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="389" FontSize="14"/>
+        <Label Content="Pool:" HorizontalAlignment="Left" Margin="25,107,0,0" VerticalAlignment="Top" FontSize="14" Width="63"/>
+        <TextBox HorizontalAlignment="Left" Height="23" Margin="93,111,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="389" FontSize="14"/>
+        <Grid Margin="50,165,50,110">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="1*" />
+                <ColumnDefinition Width="1*" />
+                <ColumnDefinition Width="1*" />
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="1*" />
+            </Grid.RowDefinitions>
+            <Button Content="Nvidia GPU" Width="80" Height="80" Grid.Row="1" Grid.Column="0" FontSize="14" Click="MiningType_Click"/>
+            <Button Content="AMD GPU" Width="80" Height="80" Grid.Row="1" Grid.Column="1" FontSize="14"/>
+            <Button Content="CPU" Width="80" Height="80" Grid.Row="1" Grid.Column="2" FontSize="14"/>
+        </Grid>
+
     </Grid>
 </Window>
