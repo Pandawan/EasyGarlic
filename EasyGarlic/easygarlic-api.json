@@ -1,0 +1,28 @@
+﻿{
+  "app_data": {
+    "win":  "APP DOWNLOAD URL",
+    "version": "1.0.0"
+  },
+  "pools": "https://watchdog.garli.co.in/api/v1/stats",
+  "miners": {
+    "cpu": {
+      "win": "https://pandawanfr.github.io/GarlicRecipes/files/miner-cpu-win.zip",
+      "file_ending": "zip",
+      "nix": "",
+      "version": "1.0.0"
+    },
+    "amd": {
+      "win": "https://github.com/nicehash/sgminer-gm/releases/download/5.5.5-8/sgminer-5.5.5-gm-nicehash-8-windows-amd64.zip",
+      "win_alt": "https://github.com/Thirtybird/YACMiner/releases/download/3.5.0-yac2/yacminer-3.5.0-yac2-x86.zip",
+      "nix": "https://github.com/nicehash/sgminer-gm/releases/download/5.5.5-8/sgminer-5.5.5-gm-nicehash-8-linux-amd64.zip",
+      "file_ending": "zip",
+      "version": "5.5.5-8"
+    },
+    "nvidia": {
+      "win": "https://github.com/tpruvot/ccminer/releases/download/2.2.4-tpruvot/ccminer-x64-2.2.4-cuda9.7z",
+      "nix": "",
+      "file_ending": "7z",
+      "version": "2.2.4"
+    }
+  }
+}
