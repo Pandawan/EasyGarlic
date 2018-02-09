@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -24,9 +25,8 @@ namespace EasyGarlic {
 
         public LocalData data;
         public Network net;
-
-
-        public async Task Setup()
+        
+        public async Task Setup(IProgress<string> progress)
         {
             data = new LocalData();
             // Load the LocalData object from data.json file
@@ -39,11 +39,12 @@ namespace EasyGarlic {
             // If versions do not match
             if (VersionCheck(data, net) == false)
             {
-                // TODO: Start process to download new update
+                // TODO: Start process to download new APP update
+                // TODO: Also remember to change the "algo" parameter
             }
 
             // Check for Miners Updates and download if so
-            await UpdateMiners();
+            await UpdateMiners(progress);
         }
 
         public bool VersionCheck(LocalData d, Network n)
@@ -51,14 +52,14 @@ namespace EasyGarlic {
             return (d.version != n.data.app_data.version);
         }
 
-        public async Task UpdateMiners()
+        public async Task UpdateMiners(IProgress<string> progress)
         {
             // If some miners have updates
             ToInstall[] toUpdate = MinerCheck(data, net);
             if (toUpdate.Length > 0)
             {
                 // Install those updates
-                await InstallMiners(toUpdate);
+                await InstallMiners(toUpdate, progress);
             }
 
             // Save
@@ -81,20 +82,26 @@ namespace EasyGarlic {
             return toUpdate.ToArray<ToInstall>();
         }
 
-        public async Task InstallMiners(ToInstall[] install)
+        public async Task InstallMiners(ToInstall[] install, IProgress<string> progress)
         {
             string[] paths = new string[install.Length];
             string[] urls = new string[install.Length];
+            string[] ending = new string[install.Length];
 
             // Create an array of every URL to download and every path so save to
             for (int i = 0; i < install.Length; i++)
             {
                 paths[i] = install[i].path;
                 urls[i] = install[i].data.GetURLFromPlatform(install[i].platform);
+                ending[i] = install[i].data.file_ending;
             }
 
+            progress.Report("Downloading miners ");
+
             // Batch download all the files
-            await net.DownloadFiles(urls, paths);
+            await net.DownloadFiles(urls, paths, ending);
+
+            progress.Report("Installing miners");
 
             // Register them as downloaded/updated
             for (int i = 0; i < install.Length; i++)
@@ -102,11 +109,38 @@ namespace EasyGarlic {
                 data.installed[install[i].id] = new LocalData.Miner()
                 {
                     id = install[i].id,
-                    path = paths[i],
+                    path = paths[i].Replace(ending[i], ""),
                     platform = install[i].platform,
-                    version = install[i].data.version
+                    version = install[i].data.version,
+                    algo = install[i].data.algo
                 };
             }
+
+            progress.Report("Finished installing!");
+        }
+        
+        // If an Install is required for the given id, return a ToInstall Object
+        public ToInstall InstallRequired(string id)
+        {
+            if (net.data.miners[id] == null)
+            {
+                Console.WriteLine("Asking for miner with id " + id + " but does not exist...");
+                return null;
+            }
+
+            // If not currently installed or not updated, return it
+            if (!data.IsInstalled(id) || ( data.installed[id] != null && data.installed[id].version != net.data.miners[id].version) || !Directory.Exists(data.installed[id].path))
+            {
+                // TODO: Make a system so it autodetects platform (& alt)
+                string platform = "win";
+                string path = Path.GetDataDirectory() + id + "." + net.data.miners[id].file_ending;
+
+                ToInstall minerToAdd = new ToInstall(net.data.miners[id], id, platform, path);
+
+                return minerToAdd;
+            }
+
+            return null;
         }
 
     }

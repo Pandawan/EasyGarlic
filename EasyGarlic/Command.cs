@@ -11,12 +11,15 @@ namespace EasyGarlic {
 
         private ProcessStartInfo startInfo;
         private Process cmd;
+        private TaskCompletionSource<bool> tcs;
 
         private bool startReading = false;
         private bool calledStop = false;
 
         public void Setup()
         {
+            tcs = new TaskCompletionSource<bool>();
+
             Console.WriteLine("Initializing Command Processes...");
 
             // Create Start Info to pass to the Process Starter
@@ -27,7 +30,7 @@ namespace EasyGarlic {
                 RedirectStandardError = true,
                 UseShellExecute = false,
                 CreateNoWindow = true,
-        };
+            };
 
             // Create a new process
             cmd = new Process();
@@ -50,6 +53,17 @@ namespace EasyGarlic {
 
             // Start reading
             cmd.StandardInput.WriteLine("echo START");
+
+        }
+
+        public Task Run(string commandToRun)
+        {
+            //cmd.StandardInput.WriteLineAsync(commandToRun);
+
+            Console.WriteLine("Running command " + commandToRun);
+
+            tcs.SetResult(true);
+            return tcs.Task;
         }
 
         public void Stop()
@@ -99,6 +113,8 @@ namespace EasyGarlic {
             {
                 Console.WriteLine("Unexpectedly stopped the process...");
             }
+
+            tcs.SetResult(true);
         }
     }
 }

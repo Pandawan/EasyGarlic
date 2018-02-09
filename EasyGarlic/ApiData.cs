@@ -14,6 +14,7 @@ namespace EasyGarlic {
             public string win_alt;
             public string nix;
             public string nix_alt;
+            public string algo;
 
             public string GetURLFromPlatform(string platform)
             {

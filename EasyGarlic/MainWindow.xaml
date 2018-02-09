@@ -13,18 +13,18 @@
     <Grid>
         <Image Margin="10,10,450,320" Source="images/nicehash-logo.png"/>
         <Grid Margin="0,50,0,0" Visibility="{Binding ReadyToShow, Converter={StaticResource InvertedBoolToVisibilityConverter}}">
-            <TextBlock TextWrapping="Wrap" Text="Loading..." FontSize="14" TextAlignment="Center" Margin="250,125,250,0" Height="20" VerticalAlignment="Top"/>
+            <TextBlock TextWrapping="Wrap" FontSize="14" TextAlignment="Center" Margin="250,125,250,0" Height="20" VerticalAlignment="Top" Text="{Binding LoadingText}"/>
             <ProgressBar Margin="150,150,150,0" IsIndeterminate="True" Height="20" VerticalAlignment="Top"/>
         </Grid>
         <Grid Margin="0,50,0,0" Visibility="{Binding ReadyToShow, Converter={StaticResource BoolToVisibilityConverter}}">
             <Rectangle Fill="#FFEAEAEA" Margin="10,5,10,100"/>
             <Rectangle Fill="#FF3F3F46" Height="40" VerticalAlignment="Bottom"/>
-            <TextBlock Margin="10,0,10,10" TextWrapping="Wrap" Height="20" VerticalAlignment="Bottom" FontSize="14" Foreground="White" Text="Info"/>
+            <TextBlock Margin="10,0,10,10" TextWrapping="Wrap" Height="20" VerticalAlignment="Bottom" FontSize="14" Foreground="White" Text="{Binding InfoText}"/>
             <Button Content="Start" Margin="172,0,172,45" FontSize="18" Height="50" VerticalAlignment="Bottom"  Click="Start_Click"/>
             <Label Content="Address:" HorizontalAlignment="Left" Margin="25,10,0,0" VerticalAlignment="Top" FontSize="14"/>
-            <TextBox HorizontalAlignment="Left" Height="23" Margin="93,14,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="389" FontSize="14"/>
+            <TextBox HorizontalAlignment="Left" Height="23" Margin="93,14,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="389" FontSize="14" Text="{Binding AddressInput}"/>
             <Label Content="Pool:" HorizontalAlignment="Left" Margin="25,44,0,0" VerticalAlignment="Top" FontSize="14" Width="63"/>
-            <TextBox HorizontalAlignment="Left" Height="23" Margin="93,48,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="389" FontSize="14"/>
+            <TextBox HorizontalAlignment="Left" Height="23" Margin="93,48,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="389" FontSize="14" Text="{Binding PoolInput}"/>
             <Grid Margin="50,100,50,110">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="1*" />
@@ -34,9 +34,9 @@
                 <Grid.RowDefinitions>
                     <RowDefinition Height="1*" />
                 </Grid.RowDefinitions>
-                <Button Content="Nvidia GPU" Width="80" Height="80" Grid.Row="1" Grid.Column="0" FontSize="14" Click="MiningType_Click"/>
-                <Button Content="AMD GPU" Width="80" Height="80" Grid.Row="1" Grid.Column="1" FontSize="14"/>
-                <Button Content="CPU" Width="80" Height="80" Grid.Row="1" Grid.Column="2" FontSize="14"/>
+                <ToggleButton Content="Nvidia GPU" Width="80" Height="80" Grid.Row="1" Grid.Column="0" FontSize="14" Checked="MiningNvidia_Checked" Unchecked="MiningNvidia_Unchecked"/>
+                <ToggleButton Content="AMD GPU" Width="80" Height="80" Grid.Row="1" Grid.Column="1" FontSize="14" Checked="MiningAMD_Checked" Unchecked="MiningAMD_Unchecked"/>
+                <ToggleButton Content="CPU" Width="80" Height="80" Grid.Row="1" Grid.Column="2" FontSize="14" Checked="MiningCPU_Checked" Unchecked="MiningCPU_Unchecked"/>
             </Grid>
         </Grid>
     </Grid>

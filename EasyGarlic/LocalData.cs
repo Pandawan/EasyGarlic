@@ -14,11 +14,13 @@ namespace EasyGarlic {
             public string platform;
             public string version;
             public string path;
+            public string algo;
         }
 
         private string path = Path.GetDataDirectory() + "data.json";
 
         public string version;
+        public Dictionary<string, string> extraParams = new Dictionary<string, string>();
         public Dictionary<string, Miner> installed = new Dictionary<string, Miner>();
         
         public void Save()
@@ -36,6 +38,7 @@ namespace EasyGarlic {
                 path = d.path;
                 version = d.version;
                 installed = d.installed;
+                extraParams = d.extraParams;
             }
             // If there wasn't, clear everything
             else
@@ -44,6 +47,11 @@ namespace EasyGarlic {
                 path = Path.GetDataDirectory() + "data.json";
                 installed = new Dictionary<string, Miner>();
             }
+        }
+
+        public bool IsInstalled(string id)
+        {
+            return installed.ContainsKey(id);
         }
     }
 }
