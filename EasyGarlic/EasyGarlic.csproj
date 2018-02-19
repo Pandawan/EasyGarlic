@@ -115,14 +115,12 @@
     </EmbeddedResource>
     <None Include="app.manifest" />
     <None Include="easygarlic-api.json" />
-    <None Include="README.md" />
     <Resource Include="images\garlicoin_icon_light.png" />
     <Resource Include="images\garlicoin_icon.png" />
     <Resource Include="images\rate.png" />
     <Resource Include="images\temperature.png" />
     <Resource Include="images\checkmark.png" />
     <Resource Include="images\cross2.png" />
-    <Resource Include="LICENSE.txt" />
     <Content Include="NLog.config">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

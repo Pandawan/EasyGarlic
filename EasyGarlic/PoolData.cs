@@ -27,6 +27,7 @@ namespace EasyGarlic {
                 _name = value;
             }
         }
+
         public string website;
         public string[] stratum;
 
