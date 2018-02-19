@@ -12,7 +12,7 @@
         <local:StringToBoolConverter x:Key="StringToBoolConverter" />
     </Window.Resources>
     <Grid>
-        <Image Margin="10,10,0,320" Source="images/nicehash-logo.png" HorizontalAlignment="Left" Width="140"/>
+        <Image RenderOptions.BitmapScalingMode="HighQuality" Margin="10,10,0,320" Source="images/nicehash-logo.png" HorizontalAlignment="Left" Width="140"/>
         <!-- Make this ComboBox later for settings and such (or perhaps a new window for settings) -->
         <ComboBox Margin="0,18,10,0" Width="120" Height="24" VerticalAlignment="Top" HorizontalAlignment="Right" Visibility="Hidden"/>
         <Grid Margin="0,50,0,0" Visibility="{Binding ReadyToShow, Converter={StaticResource InvertedBoolToVisibilityConverter}}">
@@ -53,15 +53,15 @@
                         <RowDefinition Height="1*" />
                         <RowDefinition Height="1*" />
                     </Grid.RowDefinitions>
-                    <Image x:Name="hashImg" Grid.Row="0" Grid.Column="0" Margin="10,4,217,4" Source="images/rate.png"/>
+                    <Image RenderOptions.BitmapScalingMode="HighQuality" x:Name="hashImg" Grid.Row="0" Grid.Column="0" Margin="10,4,217,4" Source="images/rate.png"/>
                     <Label x:Name="hashText" Content="{Binding HashrateText}" Grid.Row="0" Grid.Column="0" Margin="65,20,10,20" VerticalContentAlignment="Center"/>
-                    <Image x:Name="blocksImg" Grid.Row="0" Grid.Column="1" Margin="10,4,217,4" Source="images/garlicoin_icon.png"/>
+                    <Image RenderOptions.BitmapScalingMode="HighQuality" x:Name="blocksImg" Grid.Row="0" Grid.Column="1" Margin="10,4,217,4" Source="images/garlicoin_icon.png"/>
                     <Label x:Name="blocksText" Content="{Binding LastBlockText}" Grid.Row="0" Grid.Column="1" Margin="65,20,10,20" VerticalContentAlignment="Center"/>
-                    <Image x:Name="acceptedImg" Grid.Row="1" Grid.Column="0" Margin="16,8,233,48" Source="images/checkmark.png"/>
+                    <Image RenderOptions.BitmapScalingMode="HighQuality" x:Name="acceptedImg" Grid.Row="1" Grid.Column="0" Margin="16,8,233,48" Source="images/checkmark.png"/>
                     <Label x:Name="acceptedText" Content="{Binding AcceptedSharesText}" Grid.Row="1" Grid.Column="0" Margin="65,8,10,44"/>
-                    <Image x:Name="rejectedImg" Grid.Row="1" Grid.Column="0" Margin="16,46,233,10" Source="images/cross2.png"/>
+                    <Image RenderOptions.BitmapScalingMode="HighQuality" x:Name="rejectedImg" Grid.Row="1" Grid.Column="0" Margin="16,46,233,10" Source="images/cross2.png"/>
                     <Label x:Name="rejectedText" Content="{Binding RejectedSharesText}" Grid.Row="1" Grid.Column="0" Margin="65,44,10,8"/>
-                    <Image x:Name="tempImg" Grid.Row="1" Grid.Column="1" Margin="10,4,217,4" Source="images/temperature.png"/>
+                    <Image RenderOptions.BitmapScalingMode="HighQuality" x:Name="tempImg" Grid.Row="1" Grid.Column="1" Margin="10,4,217,4" Source="images/temperature.png"/>
                     <Label x:Name="tempText" Content="{Binding TemperatureText}" Grid.Row="1" Grid.Column="1" Margin="65,20,10,20" VerticalContentAlignment="Center"/>
                 </Grid>
             </Grid>
