@@ -1,31 +1,58 @@
 ﻿{
-  "app_data": {
-    "win":  "APP DOWNLOAD URL",
+  "appData": {
+    "win": "APP DOWNLOAD URL",
     "version": "1.0.0"
   },
-  "pools": "https://watchdog.garli.co.in/api/v1/stats",
+  "pools": "https://watchdog.garli.co.in/api/v1/pools",
   "miners": {
-    "cpu": {
-      "win": "https://pandawanfr.github.io/GarlicRecipes/files/miner-cpu-win.zip",
-      "file_ending": "zip",
-      "nix": "",
+    "cpu_win": {
+      "type": "cpu",
+      "platform": "win",
+      "downloadURL": "http://fork.garlicoin.fun/dl/cpuminer-allium-x64-win.zip",
+      "fileNameZip": "cpuminer-allium-x64-win.zip",
+      "fileNameMine": "cpuminer-allium-x64-win/cpuminer-allium-x64.exe",
       "version": "1.0.0",
-      "algo":  "scrypt:4096"
+      "algo": "allium"
     },
-    "amd": {
-      "win": "https://github.com/nicehash/sgminer-gm/releases/download/5.5.5-8/sgminer-5.5.5-gm-nicehash-8-windows-amd64.zip",
-      "win_alt": "https://github.com/Thirtybird/YACMiner/releases/download/3.5.0-yac2/yacminer-3.5.0-yac2-x86.zip",
-      "nix": "https://github.com/nicehash/sgminer-gm/releases/download/5.5.5-8/sgminer-5.5.5-gm-nicehash-8-linux-amd64.zip",
-      "file_ending": "zip",
-      "version": "5.5.5-8",
-      "algo": "scrypt:11"
+    "amd_win": {
+      "type": "amd",
+      "platform": "win",
+      "downloadURL": "https://github.com/lenis0012/sgminer-gm/releases/download/5.6.0-allium/sgminer-allium-windows-x86.zip",
+      "fileNameZip": "sgminer-allium-windows-x86.zip",
+      "fileNameMine": "sgminer.exe",
+      "version": "5.6.0",
+      "algo": "allium",
+      "extraParameters": "-p x --thread-concurrency 8193 -I 13 --gpu-platform 0"
     },
-    "nvidia": {
-      "win": "https://drive.google.com/uc?export=download&id=1S4-BkQ9_K8vlrtJKPr90SZZzshBnKcOB",
-      "nix": "",
-      "file_ending": "zip",
+    "amd_nix": {
+      "type": "amd",
+      "platform": "nix",
+      "downloadURL": "https://github.com/lenis0012/sgminer-gm/releases/download/5.6.0-allium/sgminer-allium-linux-x64.tar.gz",
+      "fileNameZip": "sgminer-allium-linux-x64.tar.gz",
+      "fileNameMine": "sgminer",
+      "version": "5.6.0",
+      "algo": "allium",
+      "extraParameters": "-p x --thread-concurrency 8193 -I 13 --gpu-platform 0"
+    },
+    "nvidia_win": {
+      "type": "nvidia",
+      "platform": "win",
+      "downloadURL": "https://github.com/lenis0012/ccminer/releases/download/2.3.0-allium/ccminer-x64.exe",
+      "fileNameZip": "NONE",
+      "fileNameMine": "ccminer-x64.exe",
       "version": "2.2.4",
-      "algo": "scrypt:10"
+      "algo": "allium",
+      "extraParameters": "--max-temp=85"
+    },
+    "nvidia_nix": {
+      "type": "nvidia",
+      "platform": "nix",
+      "downloadURL": "https://github.com/lenis0012/ccminer/releases/download/2.3.0-allium/ccminer-linux-x64.zip",
+      "fileNameZip": "ccminer-linux-x64.zip",
+      "fileNameMine": "ccminer",
+      "version": "2.2.4",
+      "algo": "allium",
+      "extraParameters": "--max-temp=85"
     }
   }
 }

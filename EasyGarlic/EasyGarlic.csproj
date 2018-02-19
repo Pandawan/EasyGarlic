@@ -33,15 +33,22 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="Newtonsoft.Json, Version=10.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.10.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="NLog, Version=4.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
+      <HintPath>..\packages\NLog.4.4.12\lib\net45\NLog.dll</HintPath>
     </Reference>
     <Reference Include="SharpCompress, Version=0.19.2.0, Culture=neutral, PublicKeyToken=afb0a02973931d96, processorArchitecture=MSIL">
       <HintPath>..\packages\SharpCompress.0.19.2\lib\net45\SharpCompress.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Management" />
     <Reference Include="System.Xml" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Core" />
@@ -64,16 +71,19 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Compile Include="ApiData.cs" />
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="ChildProcessTracker.cs" />
+    <Compile Include="MiningStatus.cs" />
+    <Compile Include="PoolData.cs" />
+    <Compile Include="StringToBoolConverter.cs" />
     <Compile Include="BooleanToVisibilityConverter.cs" />
     <Compile Include="Command.cs" />
     <Compile Include="Config.cs" />
-    <Compile Include="InstallManager.cs" />
     <Compile Include="IO.cs" />
+    <Compile Include="Linker.cs" />
     <Compile Include="LocalData.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
@@ -81,8 +91,10 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="MiningManager.cs" />
-    <Compile Include="Network.cs" />
+    <Compile Include="Miner.cs" />
+    <Compile Include="MinerManager.cs" />
+    <Compile Include="NetworkManager.cs" />
+    <Compile Include="OnlineData.cs" />
     <Compile Include="Path.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
@@ -101,7 +113,20 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <None Include="app.manifest" />
     <None Include="easygarlic-api.json" />
+    <Resource Include="images\garlicoin_icon_light.png" />
+    <Resource Include="images\garlicoin_icon.png" />
+    <Resource Include="images\rate.png" />
+    <Resource Include="images\temperature.png" />
+    <Resource Include="images\checkmark.png" />
+    <Resource Include="images\cross2.png" />
+    <Content Include="NLog.config">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <None Include="NLog.xsd">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>

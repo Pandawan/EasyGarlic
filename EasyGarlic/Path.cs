@@ -23,5 +23,19 @@ namespace EasyGarlic {
 
             return dataPath;
         }
+
+        public static string GetMinerDirectory(string id)
+        {
+            string dataDir = GetDataDirectory();
+
+            return dataDir + id + @"\";
+        }
+
+        public static string GetLocalDataFile()
+        {
+            string dataDir = GetDataDirectory();
+
+            return dataDir + @"data.json";
+        }
     }
 }
