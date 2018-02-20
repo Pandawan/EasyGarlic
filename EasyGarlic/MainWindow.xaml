@@ -47,9 +47,8 @@
             <!-- Mining Status Panel -->
             <Grid Margin="10,5,10,100" Visibility="{Binding ShowStats, Converter={StaticResource BoolToVisibilityConverter}}">
                 <Rectangle Fill="#FFEAEAEA" Margin="0,0,0,0"/>
-
-                <Label  Content="{Binding MiningInfoText}" FontSize="16" Height="32" VerticalAlignment="Top" DockPanel.Dock="Top"/>
-                <TabControl Name="tabDynamic">
+                <!-- Mining On __ Text <Label  Content="{Binding MiningInfoText}" FontSize="16" Height="32" VerticalAlignment="Top" DockPanel.Dock="Top"/> -->
+                <TabControl Name="tabDynamic" ItemsSource="{Binding MiningTabs}">
                     <TabControl.ItemTemplate>
                         <DataTemplate DataType="local:MiningTab">
                             <TextBlock Text="{Binding Header}"/>
@@ -67,15 +66,15 @@
                                     <RowDefinition Height="1*" />
                                 </Grid.RowDefinitions>
                                 <Image RenderOptions.BitmapScalingMode="HighQuality" x:Name="hashImg" Grid.Row="0" Grid.Column="0" Margin="10,4,217,4" Source="images/rate.png"/>
-                                <Label x:Name="hashText" Content="{Binding HashrateText}" Grid.Row="0" Grid.Column="0" Margin="65,20,10,20" VerticalContentAlignment="Center"/>
+                                <Label x:Name="hashText" Content="{Binding Path=Data.HashrateText}" Grid.Row="0" Grid.Column="0" Margin="65,20,10,20" VerticalContentAlignment="Center"/>
                                 <Image RenderOptions.BitmapScalingMode="HighQuality" x:Name="blocksImg" Grid.Row="0" Grid.Column="1" Margin="10,4,217,4" Source="images/garlicoin_icon.png"/>
-                                <Label x:Name="blocksText" Content="{Binding LastBlockText}" Grid.Row="0" Grid.Column="1" Margin="65,20,10,20" VerticalContentAlignment="Center"/>
+                                <Label x:Name="blocksText" Content="{Binding Path=Data.LastBlockText}" Grid.Row="0" Grid.Column="1" Margin="65,20,10,20" VerticalContentAlignment="Center"/>
                                 <Image RenderOptions.BitmapScalingMode="HighQuality" x:Name="acceptedImg" Grid.Row="1" Grid.Column="0" Margin="16,8,233,44" Source="images/checkmark.png"/>
-                                <Label x:Name="acceptedText" Content="{Binding AcceptedSharesText}" Grid.Row="1" Grid.Column="0" Margin="65,8,10,40"/>
+                                <Label x:Name="acceptedText" Content="{Binding Path=Data.AcceptedSharesText}" Grid.Row="1" Grid.Column="0" Margin="65,8,10,44" VerticalContentAlignment="Center"/>
                                 <Image RenderOptions.BitmapScalingMode="HighQuality" x:Name="rejectedImg" Grid.Row="1" Grid.Column="0" Margin="16,44,233,8" Source="images/cross2.png"/>
-                                <Label x:Name="rejectedText" Content="{Binding RejectedSharesText}" Grid.Row="1" Grid.Column="0" Margin="65,40,10,8"/>
+                                <Label x:Name="rejectedText" Content="{Binding Path=Data.RejectedSharesText}" Grid.Row="1" Grid.Column="0" Margin="65,44,10,8" VerticalContentAlignment="Center"/>
                                 <Image RenderOptions.BitmapScalingMode="HighQuality" x:Name="tempImg" Grid.Row="1" Grid.Column="1" Margin="10,4,217,4" Source="images/temperature.png"/>
-                                <Label x:Name="tempText" Content="{Binding TemperatureText}" Grid.Row="1" Grid.Column="1" Margin="65,20,10,20" VerticalContentAlignment="Center"/>
+                                <Label x:Name="tempText" Content="{Binding Path=Data.TemperatureText}" Grid.Row="1" Grid.Column="1" Margin="65,20,10,20" VerticalContentAlignment="Center"/>
                             </Grid>
                         </DataTemplate>
                     </TabControl.ContentTemplate>

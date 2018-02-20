@@ -61,7 +61,8 @@ namespace EasyGarlic {
 
             // Load different mining tabs
 
-            tabDynamic.DataContext = MiningTabs;
+            //tabDynamic.DataContext = MiningTabs;
+            //MiningTabs.Add(new MiningTab() { Header = "HEADER", id = "Nvidia", Data = new MiningTabData() { HashrateText = "100 AYY" } });
 
             logger.Info("Miners Installed: " + String.Join(", ", linker.minerManager.data.installed.Keys.ToArray()));
 
@@ -304,10 +305,15 @@ namespace EasyGarlic {
 
             });
 
+            // Select first tab
+            tabDynamic.SelectedIndex = 0;
+
+            // Show & Hide screens
             ReadyToStart = false;
             ShowStop = true;
             ShowStats = true;
 
+            // Log Pool Info
             string poolInfo = (lastPoolDataValue.id == -1 ? "Custom Pool (" + lastPoolDataValue.stratum + ")" : lastPoolDataValue.name + " (" + PoolInput.Trim() + ")");
             MiningInfoText = "Mining on " + poolInfo;
             logger.Info("Strating miners on " + poolInfo);

@@ -129,6 +129,8 @@ namespace EasyGarlic {
 
                     // TODO: Add sgminer & cpuminer support
 
+                    // TODO: Add up all the mining rates together (rather than just the first one) (for all miners, since they use GPU #0 and CPU #0 to identify)
+
                     // ccminer output
                     if (id.Contains("nvidia"))
                     {
