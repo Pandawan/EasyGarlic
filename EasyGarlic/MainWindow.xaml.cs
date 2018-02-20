@@ -1,6 +1,7 @@
 ﻿using NLog;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Text;
@@ -58,7 +59,10 @@ namespace EasyGarlic {
             AddressInput = linker.minerManager.GetSavedAddress();
             logger.Info("Using saved address: " + AddressInput);
 
-            //await linker.minerManager.InstallMiner("nvidia_win", loadingProgress);
+            // Load different mining tabs
+
+            tabDynamic.DataContext = MiningTabs;
+
             logger.Info("Miners Installed: " + String.Join(", ", linker.minerManager.data.installed.Keys.ToArray()));
 
             // Set Default values
@@ -67,13 +71,15 @@ namespace EasyGarlic {
             ShowStop = false;
             ShowCustomPool = false;
             InfoText = "Ready!";
-            
+
             // Tell it we're done
             logger.Info("Finished Loading.");
         }
 
         private async void MainWindow_Closing(object sender, CancelEventArgs e)
         {
+            logger.Info("Closing...");
+
             Progress<string> progress = new Progress<string>((data) =>
             {
                 InfoText = data;
@@ -193,7 +199,7 @@ namespace EasyGarlic {
                 OnPropertyChanged(nameof(ShowStop));
             }
         }
-        
+
         private bool showStats;
         public bool ShowStats
         {
@@ -239,7 +245,7 @@ namespace EasyGarlic {
                 OnPropertyChanged(nameof(ShowCustomPool));
             }
         }
-        
+
         private string miningInfoText;
         public string MiningInfoText
         {
@@ -255,81 +261,20 @@ namespace EasyGarlic {
             }
         }
 
-        private string hashrateText;
-        public string HashrateText
+        private ObservableCollection<MiningTab> miningTabs = new ObservableCollection<MiningTab>();
+        public ObservableCollection<MiningTab> MiningTabs
         {
             get
             {
-                return hashrateText;
+                return miningTabs;
             }
             set
             {
-                hashrateText = value;
+                miningTabs = value;
 
-                OnPropertyChanged(nameof(HashrateText));
+                OnPropertyChanged(nameof(MiningTabs));
             }
         }
-
-        private string lastBlockText;
-        public string LastBlockText
-        {
-            get
-            {
-                return lastBlockText;
-            }
-            set
-            {
-                lastBlockText = value;
-
-                OnPropertyChanged(nameof(LastBlockText));
-            }
-        }
-
-        private string acceptedSharesText;
-        public string AcceptedSharesText
-        {
-            get
-            {
-                return acceptedSharesText;
-            }
-            set
-            {
-                acceptedSharesText = value;
-
-                OnPropertyChanged(nameof(AcceptedSharesText));
-            }
-        }
-
-        private string rejectedSharesText;
-        public string RejectedSharesText
-        {
-            get
-            {
-                return rejectedSharesText;
-            }
-            set
-            {
-                rejectedSharesText = value;
-
-                OnPropertyChanged(nameof(RejectedSharesText));
-            }
-        }
-
-        private string temperatureText;
-        public string TemperatureText
-        {
-            get
-            {
-                return temperatureText;
-            }
-            set
-            {
-                temperatureText = value;
-
-                OnPropertyChanged(nameof(TemperatureText));
-            }
-        }
-
 
         public event PropertyChangedEventHandler PropertyChanged;
         protected virtual void OnPropertyChanged(string propertyName)
@@ -349,11 +294,14 @@ namespace EasyGarlic {
             {
                 // TODO: Add an Amount Earned feature
                 InfoText = data.info;
-                HashrateText = "Hashrate: " + data.hashRate;
-                LastBlockText = "Block: " + data.lastBlock;
-                AcceptedSharesText = "Accepted Shares: " + data.acceptedShares;
-                RejectedSharesText = "Rejected Shares: " + data.rejectedShares;
-                TemperatureText = "Temperature: " + data.temperature;
+                MiningTab tab = MiningTabs.FirstOrDefault(x => x.id.Contains(data.id) || data.id.Contains(x.id));
+                
+                tab.Data.HashrateText = "Hashrate: " + data.hashRate;
+                tab.Data.LastBlockText = "Block: " + data.lastBlock;
+                tab.Data.AcceptedSharesText = "Accepted Shares: " + data.acceptedShares;
+                tab.Data.RejectedSharesText = "Rejected Shares: " + data.rejectedShares;
+                tab.Data.TemperatureText = "Temperature: " + data.temperature;
+
             });
 
             ReadyToStart = false;
@@ -388,7 +336,7 @@ namespace EasyGarlic {
         }
 
         #endregion
-        
+
         #region Mining Buttons
 
         private void MiningNvidia_Checked(object sender, RoutedEventArgs e)
@@ -401,9 +349,15 @@ namespace EasyGarlic {
             {
                 InfoText = data;
             });
-#pragma warning disable 4014 
+
+            // Add to tab list
+            MiningTab tab = new MiningTab() { Header = Linker.IDToTitle("nvidia"), id = "nvidia" };
+            tab.Data = new MiningTabData();
+            MiningTabs.Add(tab);
+
+#pragma warning disable 4014
             linker.minerManager.EnableMiner("nvidia", progress, installingProgress);
-#pragma warning restore 4014 
+#pragma warning restore 4014
 
         }
 
@@ -414,6 +368,10 @@ namespace EasyGarlic {
                 ReadyToStart = data;
             });
             linker.minerManager.DisableMiner("nvidia", progress);
+
+            // Remove from tab list
+            MiningTab tab = MiningTabs.FirstOrDefault(x => x.id.Contains("nvidia"));
+            MiningTabs.Remove(tab);
         }
 
         private void MiningAMD_Checked(object sender, RoutedEventArgs e)
@@ -426,6 +384,12 @@ namespace EasyGarlic {
             {
                 InfoText = data;
             });
+
+            // Add to tab list
+            MiningTab tab = new MiningTab() { Header = Linker.IDToTitle("amd"), id = "amd" };
+            tab.Data = new MiningTabData();
+            MiningTabs.Add(tab);
+
 #pragma warning disable 4014
             linker.minerManager.EnableMiner("amd", progress, installingProgress);
 #pragma warning restore 4014
@@ -438,6 +402,10 @@ namespace EasyGarlic {
                 ReadyToStart = data;
             });
             linker.minerManager.DisableMiner("amd", progress);
+
+            // Remove from tab list
+            MiningTab tab = MiningTabs.FirstOrDefault(x => x.id.Contains("amd"));
+            MiningTabs.Remove(tab);
         }
 
         private void MiningCPU_Checked(object sender, RoutedEventArgs e)
@@ -450,6 +418,12 @@ namespace EasyGarlic {
             {
                 InfoText = data;
             });
+
+            // Add to tab list
+            MiningTab tab = new MiningTab() { Header = Linker.IDToTitle("cpu"), id = "cpu" };
+            tab.Data = new MiningTabData();
+            MiningTabs.Add(tab);
+
 #pragma warning disable 4014
             linker.minerManager.EnableMiner("cpu", progress, installingProgress);
 #pragma warning restore 4014
@@ -462,6 +436,10 @@ namespace EasyGarlic {
                 ReadyToStart = data;
             });
             linker.minerManager.DisableMiner("cpu", progress);
+
+            // Remove from tab list
+            MiningTab tab = MiningTabs.FirstOrDefault(x => x.id.Contains("cpu"));
+            MiningTabs.Remove(tab);
         }
 
         #endregion

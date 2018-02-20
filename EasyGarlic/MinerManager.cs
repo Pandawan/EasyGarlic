@@ -52,6 +52,11 @@ namespace EasyGarlic {
             {
                 Miner miner = data.installed[minersToUse[i]];
 
+                // Custom status for the miner itself
+                MiningStatus minerStatus = new MiningStatus();
+                status.progress = progress;
+                status.id = miner.GetID();
+
                 // If the miner has a problem
                 if (!(await VerifyMiner(miner)))
                 {

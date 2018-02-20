@@ -8,6 +8,8 @@ namespace EasyGarlic {
     public class MiningStatus {
         public string info;
 
+        public string id;
+
         public string hashRate;
         public string lastBlock;
         public int acceptedShares;

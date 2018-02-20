@@ -26,5 +26,25 @@ namespace EasyGarlic {
             await minerManager.data.SaveAsync();
         }
 
+        public static string IDToTitle(string id)
+        {
+            if (id.Contains("nvidia"))
+            {
+                return "Nvidia GPU";
+            }
+
+            if (id.Contains("amd"))
+            {
+                return "AMD GPU";
+            }
+
+            if (id.Contains("cpu"))
+            {
+                return "CPU";
+            }
+
+            return "";
+        }
+
     }
 }

@@ -77,6 +77,7 @@
     </Compile>
     <Compile Include="ChildProcessTracker.cs" />
     <Compile Include="MiningStatus.cs" />
+    <Compile Include="MiningTab.cs" />
     <Compile Include="PoolData.cs" />
     <Compile Include="StringToBoolConverter.cs" />
     <Compile Include="BooleanToVisibilityConverter.cs" />

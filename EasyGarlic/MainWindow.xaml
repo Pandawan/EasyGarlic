@@ -12,7 +12,7 @@
         <local:StringToBoolConverter x:Key="StringToBoolConverter" />
     </Window.Resources>
     <Grid>
-        <Image RenderOptions.BitmapScalingMode="HighQuality" Margin="10,10,0,320" Source="images/nicehash-logo.png" HorizontalAlignment="Left" Width="140"/>
+        <Image RenderOptions.BitmapScalingMode="HighQuality" Margin="10,10,0,0" Source="images/nicehash-logo.png" HorizontalAlignment="Left" Width="160" Height="40" VerticalAlignment="Top"/>
         <!-- Make this ComboBox later for settings and such (or perhaps a new window for settings) -->
         <ComboBox Margin="0,18,10,0" Width="120" Height="24" VerticalAlignment="Top" HorizontalAlignment="Right" Visibility="Hidden"/>
         <!-- Loading Panel -->
@@ -25,11 +25,11 @@
             <!-- Mining Setup Panel -->
             <Grid Margin="10,5,10,100" Visibility="{Binding ShowStats, Converter={StaticResource InvertedBoolToVisibilityConverter}}">
                 <Rectangle Fill="#FFEAEAEA" Margin="0,0,0,0"/>
-                <Label Content="Address:" Margin="0,5,490,0" VerticalAlignment="Top" FontSize="14" HorizontalAlignment="Right" Width="63"/>
-                <TextBox x:Name="addressInputBox" Height="24" Margin="93,10,81,0" TextWrapping="Wrap" VerticalAlignment="Top" FontSize="14" Text="{Binding AddressInput}" AcceptsReturn="False" MaxLines="1" TextChanged="AddressInputBox_TextChanged"/>
-                <Label Content="Pool:" Margin="0,40,490,0" VerticalAlignment="Top" FontSize="14" HorizontalAlignment="Right" Width="40"/>
-                <TextBox x:Name="poolInputBox" Height="24" Margin="279,45,81,0" TextWrapping="Wrap" VerticalAlignment="Top" FontSize="14" Text="{Binding PoolInput}" AcceptsReturn="False" MaxLines="1" Visibility="{Binding ShowCustomPool, Converter={StaticResource BoolToVisibilityConverter}}"/>
-                <ComboBox x:Name="poolListCombo" Margin="93,45,300,0" VerticalAlignment="Top" Height="24" ItemsSource="{Binding Path=PoolList}" DisplayMemberPath="name" SelectionChanged="PoolListCombo_SelectionChanged" />
+                <Label Content="Address:" Margin="10,5,0,0" VerticalAlignment="Top" FontSize="14" HorizontalAlignment="Left" Width="85"/>
+                <TextBox x:Name="addressInputBox" Height="24" Margin="100,10,50,0" TextWrapping="Wrap" VerticalAlignment="Top" FontSize="14" Text="{Binding AddressInput}" AcceptsReturn="False" MaxLines="1" TextChanged="AddressInputBox_TextChanged"/>
+                <Label Content="Pool:" Margin="10,40,0,0" VerticalAlignment="Top" FontSize="14" HorizontalAlignment="Left" Width="85"/>
+                <TextBox x:Name="poolInputBox" Height="24" MinWidth="100" Margin="313,45,50,0" TextWrapping="Wrap" VerticalAlignment="Top" FontSize="14" Text="{Binding PoolInput}" AcceptsReturn="False" MaxLines="1" Visibility="{Binding ShowCustomPool, Converter={StaticResource BoolToVisibilityConverter}}"/>
+                <ComboBox x:Name="poolListCombo" MinWidth="100" Margin="100,45,266,0" VerticalAlignment="Top" Height="24" ItemsSource="{Binding Path=PoolList}" DisplayMemberPath="name" SelectionChanged="PoolListCombo_SelectionChanged" />
                 <Grid Margin="50,100,50,10">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="1*" />
@@ -39,40 +39,51 @@
                     <Grid.RowDefinitions>
                         <RowDefinition Height="1*" />
                     </Grid.RowDefinitions>
-                    <ToggleButton Content="Nvidia GPU" Width="80" Height="80" Grid.Row="1" Grid.Column="0" FontSize="14" Checked="MiningNvidia_Checked" Unchecked="MiningNvidia_Unchecked"/>
-                    <ToggleButton Content="AMD GPU" Width="80" Height="80" Grid.Row="1" Grid.Column="1" FontSize="14" Checked="MiningAMD_Checked" Unchecked="MiningAMD_Unchecked"/>
-                    <ToggleButton Content="CPU" Width="80" Height="80" Grid.Row="1" Grid.Column="2" FontSize="14" Checked="MiningCPU_Checked" Unchecked="MiningCPU_Unchecked"/>
+                    <ToggleButton Content="Nvidia GPU" Width="90" Height="90" Grid.Row="1" Grid.Column="0" FontSize="14" Checked="MiningNvidia_Checked" Unchecked="MiningNvidia_Unchecked"/>
+                    <ToggleButton Content="AMD GPU" Width="90" Height="90" Grid.Row="1" Grid.Column="1" FontSize="14" Checked="MiningAMD_Checked" Unchecked="MiningAMD_Unchecked"/>
+                    <ToggleButton Content="CPU" Width="90" Height="90" Grid.Row="1" Grid.Column="2" FontSize="14" Checked="MiningCPU_Checked" Unchecked="MiningCPU_Unchecked"/>
                 </Grid>
             </Grid>
             <!-- Mining Status Panel -->
             <Grid Margin="10,5,10,100" Visibility="{Binding ShowStats, Converter={StaticResource BoolToVisibilityConverter}}">
                 <Rectangle Fill="#FFEAEAEA" Margin="0,0,0,0"/>
-                <Label  Content="{Binding MiningInfoText}" FontSize="16" Height="32" VerticalAlignment="Top"/>
-                <!-- Info Grid -->
-                <Grid Margin="10,40,10,10">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="1*" />
-                        <ColumnDefinition Width="1*" />
-                    </Grid.ColumnDefinitions>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="1*" />
-                        <RowDefinition Height="1*" />
-                    </Grid.RowDefinitions>
-                    <Image RenderOptions.BitmapScalingMode="HighQuality" x:Name="hashImg" Grid.Row="0" Grid.Column="0" Margin="10,4,217,4" Source="images/rate.png"/>
-                    <Label x:Name="hashText" Content="{Binding HashrateText}" Grid.Row="0" Grid.Column="0" Margin="65,20,10,20" VerticalContentAlignment="Center"/>
-                    <Image RenderOptions.BitmapScalingMode="HighQuality" x:Name="blocksImg" Grid.Row="0" Grid.Column="1" Margin="10,4,217,4" Source="images/garlicoin_icon.png"/>
-                    <Label x:Name="blocksText" Content="{Binding LastBlockText}" Grid.Row="0" Grid.Column="1" Margin="65,20,10,20" VerticalContentAlignment="Center"/>
-                    <Image RenderOptions.BitmapScalingMode="HighQuality" x:Name="acceptedImg" Grid.Row="1" Grid.Column="0" Margin="16,8,233,48" Source="images/checkmark.png"/>
-                    <Label x:Name="acceptedText" Content="{Binding AcceptedSharesText}" Grid.Row="1" Grid.Column="0" Margin="65,8,10,44"/>
-                    <Image RenderOptions.BitmapScalingMode="HighQuality" x:Name="rejectedImg" Grid.Row="1" Grid.Column="0" Margin="16,46,233,10" Source="images/cross2.png"/>
-                    <Label x:Name="rejectedText" Content="{Binding RejectedSharesText}" Grid.Row="1" Grid.Column="0" Margin="65,44,10,8"/>
-                    <Image RenderOptions.BitmapScalingMode="HighQuality" x:Name="tempImg" Grid.Row="1" Grid.Column="1" Margin="10,4,217,4" Source="images/temperature.png"/>
-                    <Label x:Name="tempText" Content="{Binding TemperatureText}" Grid.Row="1" Grid.Column="1" Margin="65,20,10,20" VerticalContentAlignment="Center"/>
-                </Grid>
+
+                <Label  Content="{Binding MiningInfoText}" FontSize="16" Height="32" VerticalAlignment="Top" DockPanel.Dock="Top"/>
+                <TabControl Name="tabDynamic">
+                    <TabControl.ItemTemplate>
+                        <DataTemplate DataType="local:MiningTab">
+                            <TextBlock Text="{Binding Header}"/>
+                        </DataTemplate>
+                    </TabControl.ItemTemplate>
+                    <TabControl.ContentTemplate>
+                        <DataTemplate DataType="local:MiningTab">
+                            <Grid Background="#FFE5E5E5">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="1*" />
+                                    <ColumnDefinition Width="1*" />
+                                </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="1*" />
+                                    <RowDefinition Height="1*" />
+                                </Grid.RowDefinitions>
+                                <Image RenderOptions.BitmapScalingMode="HighQuality" x:Name="hashImg" Grid.Row="0" Grid.Column="0" Margin="10,4,217,4" Source="images/rate.png"/>
+                                <Label x:Name="hashText" Content="{Binding HashrateText}" Grid.Row="0" Grid.Column="0" Margin="65,20,10,20" VerticalContentAlignment="Center"/>
+                                <Image RenderOptions.BitmapScalingMode="HighQuality" x:Name="blocksImg" Grid.Row="0" Grid.Column="1" Margin="10,4,217,4" Source="images/garlicoin_icon.png"/>
+                                <Label x:Name="blocksText" Content="{Binding LastBlockText}" Grid.Row="0" Grid.Column="1" Margin="65,20,10,20" VerticalContentAlignment="Center"/>
+                                <Image RenderOptions.BitmapScalingMode="HighQuality" x:Name="acceptedImg" Grid.Row="1" Grid.Column="0" Margin="16,8,233,44" Source="images/checkmark.png"/>
+                                <Label x:Name="acceptedText" Content="{Binding AcceptedSharesText}" Grid.Row="1" Grid.Column="0" Margin="65,8,10,40"/>
+                                <Image RenderOptions.BitmapScalingMode="HighQuality" x:Name="rejectedImg" Grid.Row="1" Grid.Column="0" Margin="16,44,233,8" Source="images/cross2.png"/>
+                                <Label x:Name="rejectedText" Content="{Binding RejectedSharesText}" Grid.Row="1" Grid.Column="0" Margin="65,40,10,8"/>
+                                <Image RenderOptions.BitmapScalingMode="HighQuality" x:Name="tempImg" Grid.Row="1" Grid.Column="1" Margin="10,4,217,4" Source="images/temperature.png"/>
+                                <Label x:Name="tempText" Content="{Binding TemperatureText}" Grid.Row="1" Grid.Column="1" Margin="65,20,10,20" VerticalContentAlignment="Center"/>
+                            </Grid>
+                        </DataTemplate>
+                    </TabControl.ContentTemplate>
+                </TabControl>
             </Grid>
             <!-- Start & Stop Buttons -->
-            <Button Content="Stop" Margin="172,0,172,45" FontSize="18" Height="50" VerticalAlignment="Bottom"  Click="Stop_Click" Visibility="{Binding ShowStop, Converter={StaticResource BoolToVisibilityConverter}}"/>
-            <Button Content="Start" Margin="172,0,172,45" FontSize="18" Height="50" VerticalAlignment="Bottom"  Click="Start_Click" Visibility="{Binding ShowStop, Converter={StaticResource InvertedBoolToVisibilityConverter}}" >
+            <Button Content="Stop" Margin="175,0,175,45" FontSize="20" Height="50" VerticalAlignment="Bottom"  Click="Stop_Click" Visibility="{Binding ShowStop, Converter={StaticResource BoolToVisibilityConverter}}"/>
+            <Button Content="Start" Margin="175,0,175,45" FontSize="20" Height="50" VerticalAlignment="Bottom"  Click="Start_Click" Visibility="{Binding ShowStop, Converter={StaticResource InvertedBoolToVisibilityConverter}}" >
                 <Button.Style>
                     <Style TargetType="{x:Type Button}">
                         <Style.Triggers>
