@@ -22,6 +22,11 @@ namespace EasyGarlic {
         private bool startReading = false;
         private bool calledStop = false;
 
+        // Using string hashrate to have units
+        private string totalHashrate = "";
+        // List of Device # that has already been recorded (and how many times it has been recorded)
+        private Dictionary<string, int> hashratesSeen = new Dictionary<string, int>();
+
         private string id;
 
         public void Setup(string _id, bool hide)
@@ -101,11 +106,27 @@ namespace EasyGarlic {
 
         public void SetStatus(MiningStatus _status)
         {
-            // 2018-02-18 21:44:31 | Info | Output from nvidia_win process: [2018-02-18 21:44:31][01;37m accepted: 1/1 (diff 0.022), 1060.33 kH/s [32myes![0m
-            // Nvidia Regex Accepted: /(?:\[[0-9-: ]+\])(?:.*)(?:accepted: )(\d+)(?:\/)(\d+)(?:.*diff )(\d+\.?\d+)(?:.*, )([\d\.]+ .+H\/s)/
 
-            // 2018-02-18 21:43:23 | Info | Output from nvidia_win process: [2018-02-18 21:43:23] GPU #0: 1414 MHz 23.72 kH/W 44W 37C FAN 0%[0m
-            // Nvidia Regex Regular: (?:\[[0-9-: ]+\])(?:.*: )([\d]+.+Hz)(?: )([\d]+.+H\/W)(?: )([\d]+W)(?: )([\d]+C)(?: FAN )([\d]+%)
+            ///  NVIDIA \\\
+            // [2018-02-18 21:44:31][01;37m accepted: 1/1 (diff 0.022), 1060.33 kH/s [32myes![0m
+            // Nvidia Regex Accepted: (?:\[[0-9-: ]+\])(?:.*)(?:accepted: )(\d+)(?:\/)(\d+)(?:.*diff )(\d+\.?\d+)(?:.*, )([\d\.]+ .+H\/s)
+
+            // [2018-02-18 21:43:23] GPU #0: 1414 MHz 23.72 kH/W 44W 37C FAN 0%[0m
+            // Nvidia Regex Regular: (?:\[[0-9-: ]+\])(?:.*GPU #)(\d+)(?:: )([\d]+.+Hz)(?: )([\d]+.+H\/W)(?: )([\d]+W)(?: )([\d]+C)(?: FAN )([\d]+%)
+
+            // [2018-02-20 13:43:54][36m allium block 67129, diff 250.313[0m
+            // Nvidia Regex Block: (?:\[[0-9-: ]+\])(?:.*allium block )(\d*)(?:.*diff )([\d\.]*)
+
+            /// CPU \\\
+            // [2018-02-20 13:43:59] CPU #0: 39.30 kH/s[0m
+            // CPU Regex Regular: (?:\[[0-9-: ]+\])(?:.*CPU #)(\d+)(?:: )([\d]+.+H\/s)
+
+            // [2018-02-18 21:44:31][01;37m accepted: 1/1 (diff 0.022), 1060.33 kH/s [32myes![0m
+            // CPU Regex Accepted: (?:\[[0-9-: ]+\])(?:.*)(?:accepted: )(\d+)(?:\/)(\d+)(?:.*diff )(\d+\.?\d+)(?:.*, )([\d\.]+ .+H\/s)
+
+            // [2018-02-20 13:43:56][36m allium block 67129, diff 250.313[0m
+            // CPU Regex Block: (?:\[[0-9-: ]+\])(?:.*allium block )(\d*)(?:.*diff )([\d\.]*)
+
             status = _status;
         }
 
@@ -129,7 +150,7 @@ namespace EasyGarlic {
 
                     // TODO: Add sgminer & cpuminer support
 
-                    // TODO: Add up all the mining rates together (rather than just the first one) (for all miners, since they use GPU #0 and CPU #0 to identify)
+                    // TODO: Add up all the mining rates together for all miners rather than just CPU (which would allow multiple miner support)
 
                     // ccminer output
                     if (id.Contains("nvidia"))
@@ -145,8 +166,8 @@ namespace EasyGarlic {
                             status.hashRate = acceptedMatch.Groups[4].Value;
                         }
 
-                        // 0 = all, 1 = card rate, 2 = H/W, 3 = W, 4 = Temperature (C), 5 = Fan %
-                        Match regularMatch = Regex.Match(e.Data, @"(?:\[[0-9-: ]+\])(?:.*: )([\d]+.+Hz)(?: )([\d]+.+H\/W)(?: )([\d]+W)(?: )([\d]+C)(?: FAN )([\d]+%)");
+                        // 0 = all, 1 = gpu #, 2 = card rate, 3 = H/W, 4 = W, 5 = Temperature (C), 6 = Fan %
+                        Match regularMatch = Regex.Match(e.Data, @"(?:\[[0-9-: ]+\])(?:.*GPU #)(\d+)(?:: )([\d]+.+Hz)(?: )([\d]+.+H\/W)(?: )([\d]+W)(?: )([\d]+C)(?: FAN )([\d]+%)");
                         if (regularMatch.Success)
                         {
                             status.temperature = regularMatch.Groups[4].Value;
@@ -158,9 +179,83 @@ namespace EasyGarlic {
                         {
                             status.lastBlock = blockMatch.Groups[1].Value;
                         }
-
                     }
 
+                    // cpuminer output
+                    if (id.Contains("cpu"))
+                    {
+                        status.temperature = "Not Available";
+
+                        // Hashrate
+                        // 0 = all, 1 = cpu #, 2 = rate
+                        Match regularMatch = Regex.Match(e.Data, @"(?:\[[0-9-: ]+\])(?:.*CPU #)(\d+)(?:: )([\d]+.+H\/s)");
+                        if (regularMatch.Success)
+                        {
+                            // If that key doesn't exist, create it at 0
+                            if (!hashratesSeen.ContainsKey(regularMatch.Groups[1].Value))
+                            {
+                                hashratesSeen.Add(regularMatch.Groups[1].Value, 0);
+                            }
+
+                            // Calculate if all have been seen once
+                            Dictionary<string, int> tempCopy = new Dictionary<string, int>(hashratesSeen);
+                            int numberSeen = 0;
+                            foreach (KeyValuePair<string, int> item in hashratesSeen)
+                            {
+                                // Use 2 so that it doesn't do it on first value it gets (where dictionary is empty)
+                                if (item.Value >= 1)
+                                {
+                                    numberSeen++;
+                                    tempCopy[item.Key]--;
+                                }
+                            }
+
+                            // If all have been seen at least once, set as "seen" and remove 1 from each
+                            bool allSeen = (numberSeen == hashratesSeen.Count);
+
+                            // If all have been seen, send total hashrate
+                            if (allSeen)
+                            {
+                                // Reset everything to -1 
+                                hashratesSeen = tempCopy;
+
+                                // Send the total hashrate, then reset because it's 0 so first of next series
+                                status.hashRate = totalHashrate;
+                                status.progress.Report(status);
+
+                                totalHashrate = "";
+                            }
+
+                            // Add seen + 1 for that device
+                            hashratesSeen[regularMatch.Groups[1].Value] += 1;
+                            // Add the hashrates and put them in as total
+                            totalHashrate = Utilities.AddHashes(regularMatch.Groups[2].Value, totalHashrate);
+
+                            // Return because we don't want to return hashrate every time, only total hashrate (which means multiple lines need to be processed before sending)
+                            return;
+                        }
+
+                        // Accepted & Rejected
+                        // 0 = all, 1 = accepted shares, 2 = total shares, 3 = difficulty, 4 = hashrate
+                        Match acceptedMatch = Regex.Match(e.Data, @"(?:\[[0-9-: ]+\])(?:.*)(?:accepted: )(\d+)(?:\/)(\d+)(?:.*diff )(\d+\.?\d+)(?:.*, )([\d\.]+ .+H\/s)");
+                        if (acceptedMatch.Success)
+                        {
+                            // Rejected = max - accepted
+                            status.rejectedShares = int.Parse(acceptedMatch.Groups[2].Value) - int.Parse(acceptedMatch.Groups[1].Value);
+                            // Accepted = accepted
+                            status.acceptedShares = int.Parse(acceptedMatch.Groups[1].Value);
+                        }
+                        
+                        // Block Value
+                        // 0 = all, 1 = block count, 2 = diff
+                        Match blockMatch = Regex.Match(e.Data, @"(?:\[[0-9-: ]+\])(?:.*allium block )(\d*)(?:.*diff )([\d\.]*)");
+                        if (blockMatch.Success)
+                        {
+                            status.lastBlock = blockMatch.Groups[1].Value;
+                        }
+                    }
+                    
+                    // Report status change
                     status.progress.Report(status);
                 }
             }

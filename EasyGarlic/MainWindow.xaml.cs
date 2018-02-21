@@ -357,7 +357,7 @@ namespace EasyGarlic {
             });
 
             // Add to tab list
-            MiningTab tab = new MiningTab() { Header = Linker.IDToTitle("nvidia"), id = "nvidia" };
+            MiningTab tab = new MiningTab() { Header = Utilities.IDToTitle("nvidia"), id = "nvidia" };
             tab.Data = new MiningTabData();
             MiningTabs.Add(tab);
 
@@ -392,7 +392,7 @@ namespace EasyGarlic {
             });
 
             // Add to tab list
-            MiningTab tab = new MiningTab() { Header = Linker.IDToTitle("amd"), id = "amd" };
+            MiningTab tab = new MiningTab() { Header = Utilities.IDToTitle("amd"), id = "amd" };
             tab.Data = new MiningTabData();
             MiningTabs.Add(tab);
 
@@ -426,7 +426,7 @@ namespace EasyGarlic {
             });
 
             // Add to tab list
-            MiningTab tab = new MiningTab() { Header = Linker.IDToTitle("cpu"), id = "cpu" };
+            MiningTab tab = new MiningTab() { Header = Utilities.IDToTitle("cpu"), id = "cpu" };
             tab.Data = new MiningTabData();
             MiningTabs.Add(tab);
 
