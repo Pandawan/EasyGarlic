@@ -25,7 +25,8 @@ namespace EasyGarlic {
 
         private static Logger logger = LogManager.GetLogger("MainLogger");
         private static Logger headerLogger = LogManager.GetLogger("HeaderLogger");
-        private Linker linker;
+        public Linker linker;
+        private SettingsWindow settingsWindow;
 
         public MainWindow()
         {
@@ -70,6 +71,7 @@ namespace EasyGarlic {
             ReadyToShow = true;
             ShowStats = false;
             ShowStop = false;
+            EnableAdvanced = true;
             ShowCustomPool = false;
             InfoText = "Ready!";
 
@@ -80,18 +82,28 @@ namespace EasyGarlic {
         private async void MainWindow_Closing(object sender, CancelEventArgs e)
         {
             logger.Info("Closing...");
-
+            
             Progress<string> progress = new Progress<string>((data) =>
             {
                 InfoText = data;
             });
 
+            // Stop Mining
             await linker.minerManager.StopMining(progress);
 
+            // Close Settings Window
+            settingsWindow.Close();
+            
+            // Save Data
             await linker.minerManager.data.SaveAsync();
 
             logger.Info("Closed all processes...");
             headerLogger.Info("");
+        }
+
+        public async void ReloadData()
+        {
+            await Task.Run(() => MainWindow_Loaded(this, null));
         }
 
         #region WPF Properties
@@ -261,6 +273,21 @@ namespace EasyGarlic {
                 OnPropertyChanged(nameof(MiningInfoText));
             }
         }
+        
+        private bool enableAdvanced;
+        public bool EnableAdvanced
+        {
+            get
+            {
+                return enableAdvanced;
+            }
+            set
+            {
+                enableAdvanced = value;
+
+                OnPropertyChanged(nameof(EnableAdvanced));
+            }
+        }
 
         private ObservableCollection<MiningTab> miningTabs = new ObservableCollection<MiningTab>();
         public ObservableCollection<MiningTab> MiningTabs
@@ -312,6 +339,7 @@ namespace EasyGarlic {
             ReadyToStart = false;
             ShowStop = true;
             ShowStats = true;
+            EnableAdvanced = false;
 
             // Log Pool Info
             string poolInfo = (lastPoolDataValue.id == -1 ? "Custom Pool (" + lastPoolDataValue.stratum + ")" : lastPoolDataValue.name + " (" + PoolInput.Trim() + ")");
@@ -320,6 +348,7 @@ namespace EasyGarlic {
 
             await linker.minerManager.StartMining(AddressInput.Trim(), PoolInput.Trim(), startingProgress);
 
+            EnableAdvanced = true;
             ShowStats = false;
             ShowStop = false;
             ReadyToStart = true;
@@ -334,9 +363,11 @@ namespace EasyGarlic {
 
             ReadyToStart = false;
             ShowStop = false;
+            EnableAdvanced = false;
 
             await linker.minerManager.StopMining(stoppingProgress);
 
+            EnableAdvanced = true;
             ShowStop = false;
             ReadyToStart = true;
         }
@@ -486,5 +517,11 @@ namespace EasyGarlic {
         }
 
         #endregion
+
+        private void SettingsButton_Click(object sender, RoutedEventArgs e)
+        {
+            settingsWindow = new SettingsWindow(this);
+            settingsWindow.ShowDialog();
+        }
     }
 }

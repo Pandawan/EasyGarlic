@@ -286,8 +286,21 @@ namespace EasyGarlic {
                 command += "@echo off \ncolor 02 \n\nsetx GPU_FORCE_64BIT_PTR 0 \nsetx GPU_MAX_HEAP_SIZE 100 \nsetx GPU_MAX_SINGLE_ALLOC_PERCENT 100 \nsetx GPU_MAX_ALLOC_PERCENT 100 \nsetx GPU_USE_SYNC_OBJECTS 1 \n";
             }
 
-            command += "\"" + m.installPath + m.fileNameMine + "\"" + " -a " + m.algo + " -o " + pool + " -u " + address + " " + m.extraParameters;
+            command += "\"" + m.installPath + m.fileNameMine + "\"" + " -a " + m.algo + " -o " + pool + " -u " + address + " " + m.extraParameters ;
 
+            // Custom intensity if not 0
+            if (m.type == "nvidia" && m.customIntensity != 0)
+            {
+                command += "-i " + m.customIntensity;
+            }
+            else if (m.type == "amd" && m.customIntensity != 0)
+            {
+                command += "-i " + m.customIntensity;
+            }
+
+            // Add custom parameters last
+            command += m.customParameters;
+            
             return command;
         }
 

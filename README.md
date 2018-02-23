@@ -4,6 +4,7 @@ An easy to use Garlicoin Miner
 ## TODO
 - Add support for multiple GPUs
 - Add support for SGMiner (AMD) and CPUMiner (cpu)
+- Add advanced option to switch to cpuminer-opt
 - Add custom parameters options
 - Add more info on Mining Status
 - Add info like estimated reward & estimated earned

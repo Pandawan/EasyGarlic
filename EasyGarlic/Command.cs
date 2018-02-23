@@ -148,8 +148,8 @@ namespace EasyGarlic {
                 {
                     logger.Info("Output from " + id + " process: " + e.Data);
 
-                    // TODO: Add sgminer & cpuminer support
-
+                    // TODO: Add sgminer support
+                    // TODO: Switch cpuminer to cpuminer-opt https://github.com/JayDDee/cpuminer-opt
                     // TODO: Add up all the mining rates together for all miners rather than just CPU (which would allow multiple miner support)
 
                     // ccminer output

@@ -12,9 +12,10 @@
         <local:StringToBoolConverter x:Key="StringToBoolConverter" />
     </Window.Resources>
     <Grid>
+        <!-- Logo -->
         <Image RenderOptions.BitmapScalingMode="HighQuality" Margin="10,10,0,0" Source="images/nicehash-logo.png" HorizontalAlignment="Left" Width="160" Height="40" VerticalAlignment="Top"/>
-        <!-- Make this ComboBox later for settings and such (or perhaps a new window for settings) -->
-        <ComboBox Margin="0,18,10,0" Width="120" Height="24" VerticalAlignment="Top" HorizontalAlignment="Right" Visibility="Hidden"/>
+        <!-- Settings Button -->
+        <Button Content="Advanced" Margin="0,10,10,0" VerticalAlignment="Top" HorizontalAlignment="Right" Width="80" Height="24" FontSize="14" Click="SettingsButton_Click" Visibility="{Binding EnableAdvanced, Converter={StaticResource BoolToVisibilityConverter}}"/>
         <!-- Loading Panel -->
         <Grid Margin="0,50,0,0" Visibility="{Binding ReadyToShow, Converter={StaticResource InvertedBoolToVisibilityConverter}}">
             <TextBlock TextWrapping="Wrap" FontSize="14" TextAlignment="Center" Margin="125,125,125,0" Height="20" VerticalAlignment="Top" Text="{Binding LoadingText}"/>
@@ -22,28 +23,6 @@
         </Grid>
         <!-- Main View -->
         <Grid Margin="0,50,0,0" Visibility="{Binding ReadyToShow, Converter={StaticResource BoolToVisibilityConverter}}">
-            <!-- Mining Setup Panel -->
-            <Grid Margin="10,5,10,100" Visibility="{Binding ShowStats, Converter={StaticResource InvertedBoolToVisibilityConverter}}">
-                <Rectangle Fill="#FFEAEAEA" Margin="0,0,0,0"/>
-                <Label Content="Address:" Margin="10,5,0,0" VerticalAlignment="Top" FontSize="14" HorizontalAlignment="Left" Width="85"/>
-                <TextBox x:Name="addressInputBox" Height="24" Margin="100,10,50,0" TextWrapping="Wrap" VerticalAlignment="Top" FontSize="14" Text="{Binding AddressInput}" AcceptsReturn="False" MaxLines="1" TextChanged="AddressInputBox_TextChanged"/>
-                <Label Content="Pool:" Margin="10,40,0,0" VerticalAlignment="Top" FontSize="14" HorizontalAlignment="Left" Width="85"/>
-                <TextBox x:Name="poolInputBox" Height="24" MinWidth="100" Margin="313,45,50,0" TextWrapping="Wrap" VerticalAlignment="Top" FontSize="14" Text="{Binding PoolInput}" AcceptsReturn="False" MaxLines="1" Visibility="{Binding ShowCustomPool, Converter={StaticResource BoolToVisibilityConverter}}"/>
-                <ComboBox x:Name="poolListCombo" MinWidth="100" Margin="100,45,266,0" VerticalAlignment="Top" Height="24" ItemsSource="{Binding Path=PoolList}" DisplayMemberPath="name" SelectionChanged="PoolListCombo_SelectionChanged" />
-                <Grid Margin="50,100,50,10">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="1*" />
-                        <ColumnDefinition Width="1*" />
-                        <ColumnDefinition Width="1*" />
-                    </Grid.ColumnDefinitions>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="1*" />
-                    </Grid.RowDefinitions>
-                    <ToggleButton Content="Nvidia GPU" Width="90" Height="90" Grid.Row="1" Grid.Column="0" FontSize="14" Checked="MiningNvidia_Checked" Unchecked="MiningNvidia_Unchecked"/>
-                    <ToggleButton Content="AMD GPU" Width="90" Height="90" Grid.Row="1" Grid.Column="1" FontSize="14" Checked="MiningAMD_Checked" Unchecked="MiningAMD_Unchecked"/>
-                    <ToggleButton Content="CPU" Width="90" Height="90" Grid.Row="1" Grid.Column="2" FontSize="14" Checked="MiningCPU_Checked" Unchecked="MiningCPU_Unchecked"/>
-                </Grid>
-            </Grid>
             <!-- Mining Status Panel -->
             <Grid Margin="10,5,10,100" Visibility="{Binding ShowStats, Converter={StaticResource BoolToVisibilityConverter}}">
                 <Rectangle Fill="#FFEAEAEA" Margin="0,0,0,0"/>
@@ -79,6 +58,28 @@
                         </DataTemplate>
                     </TabControl.ContentTemplate>
                 </TabControl>
+            </Grid>
+            <!-- Mining Setup Panel -->
+            <Grid Margin="10,5,10,100" Visibility="{Binding ShowStats, Converter={StaticResource InvertedBoolToVisibilityConverter}}">
+                <Rectangle Fill="#FFEAEAEA" Margin="0,0,0,0"/>
+                <Label Content="Address:" Margin="10,5,0,0" VerticalAlignment="Top" FontSize="14" HorizontalAlignment="Left" Width="85"/>
+                <TextBox x:Name="addressInputBox" Height="24" Margin="100,10,50,0" TextWrapping="Wrap" VerticalAlignment="Top" FontSize="14" Text="{Binding AddressInput}" AcceptsReturn="False" MaxLines="1" TextChanged="AddressInputBox_TextChanged"/>
+                <Label Content="Pool:" Margin="10,40,0,0" VerticalAlignment="Top" FontSize="14" HorizontalAlignment="Left" Width="85"/>
+                <TextBox x:Name="poolInputBox" Height="24" MinWidth="100" Margin="313,45,50,0" TextWrapping="Wrap" VerticalAlignment="Top" FontSize="14" Text="{Binding PoolInput}" AcceptsReturn="False" MaxLines="1" Visibility="{Binding ShowCustomPool, Converter={StaticResource BoolToVisibilityConverter}}"/>
+                <ComboBox x:Name="poolListCombo" MinWidth="100" Margin="100,45,266,0" VerticalAlignment="Top" Height="24" ItemsSource="{Binding Path=PoolList}" DisplayMemberPath="name" SelectionChanged="PoolListCombo_SelectionChanged" />
+                <Grid Margin="50,100,50,10">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="1*" />
+                        <ColumnDefinition Width="1*" />
+                        <ColumnDefinition Width="1*" />
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="1*" />
+                    </Grid.RowDefinitions>
+                    <ToggleButton Content="Nvidia GPU" Width="90" Height="90" Grid.Row="1" Grid.Column="0" FontSize="14" Checked="MiningNvidia_Checked" Unchecked="MiningNvidia_Unchecked"/>
+                    <ToggleButton Content="AMD GPU" Width="90" Height="90" Grid.Row="1" Grid.Column="1" FontSize="14" Checked="MiningAMD_Checked" Unchecked="MiningAMD_Unchecked"/>
+                    <ToggleButton Content="CPU" Width="90" Height="90" Grid.Row="1" Grid.Column="2" FontSize="14" Checked="MiningCPU_Checked" Unchecked="MiningCPU_Unchecked"/>
+                </Grid>
             </Grid>
             <!-- Start & Stop Buttons -->
             <Button Content="Stop" Margin="175,0,175,45" FontSize="20" Height="50" VerticalAlignment="Bottom"  Click="Stop_Click" Visibility="{Binding ShowStop, Converter={StaticResource BoolToVisibilityConverter}}"/>

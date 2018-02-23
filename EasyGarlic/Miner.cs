@@ -29,6 +29,10 @@ namespace EasyGarlic {
         public string algo;
         public string extraParameters;
 
+        // Custom/Advanced miner settings
+        public int customIntensity;
+        public string customParameters;
+
         [JsonIgnore]
         public MinerStatus status = MinerStatus.Disabled;
 
