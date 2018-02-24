@@ -223,7 +223,6 @@ namespace EasyGarlic {
                 {
                     // Extract the zip async
                     await linker.networkManager.ExtractZipFile(downloadPath, installPath);
-
                 }
                 // Add it to list of installed
                 data.installed.Add(id, minerToInstall);
@@ -262,9 +261,9 @@ namespace EasyGarlic {
                 }
 
                 // Delete Install Path
-                if (File.Exists(miner.installPath))
+                if (Directory.Exists(miner.installPath))
                 {
-                    File.Delete(miner.installPath);
+                    Directory.Delete(miner.installPath, true);
                 }
             });
 
@@ -274,6 +273,7 @@ namespace EasyGarlic {
             logger.Info("Finished uninstalling miner \"" + miner.GetID() + "\"");
             progress.Report("Finished uninstalling miner \"" + miner.GetID() + "\"");
 
+            logger.Info("Installed: " + String.Join(", ", data.installed.Keys.ToArray()));
         }
 
         public string GetMinerCommand(string address, string pool, Miner m)
@@ -295,7 +295,7 @@ namespace EasyGarlic {
             }
             else if (m.type == "amd" && m.customIntensity != 0)
             {
-                command += "-i " + m.customIntensity;
+                command += "-I " + m.customIntensity;
             }
 
             // Add custom parameters last

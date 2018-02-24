@@ -74,6 +74,8 @@ namespace EasyGarlic {
                         entry.WriteToDirectory(path, new ExtractionOptions() { ExtractFullPath = true, Overwrite = true });
                     }
                 }
+                // Close Archive Factory so it's not being used
+                archive.Dispose();
             });
         }
 

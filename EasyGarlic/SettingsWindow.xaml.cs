@@ -27,6 +27,21 @@ namespace EasyGarlic {
 
         #region WPF Properties
 
+        private bool enableOptions;
+        public bool EnableOptions
+        {
+            get
+            {
+                return enableOptions;
+            }
+            set
+            {
+                enableOptions = value;
+
+                OnPropertyChanged(nameof(EnableOptions));
+            }
+        }
+
         private string versionText;
         public string VersionText
         {
@@ -118,6 +133,21 @@ namespace EasyGarlic {
             }
         }
 
+        private string infoText;
+        public string InfoText
+        {
+            get
+            {
+                return infoText;
+            }
+            set
+            {
+                infoText = value;
+
+                OnPropertyChanged(nameof(InfoText));
+            }
+        }
+
         public event PropertyChangedEventHandler PropertyChanged;
         protected virtual void OnPropertyChanged(string propertyName)
         {
@@ -127,7 +157,7 @@ namespace EasyGarlic {
         }
 
         #endregion
-        
+
 
         public SettingsWindow(MainWindow mainWindow)
         {
@@ -142,17 +172,7 @@ namespace EasyGarlic {
         private async void SettingsWindow_Loaded(object sender, RoutedEventArgs e)
         {
             // Load different Miner items in ComboBox
-            MinerList = new List<Miner>(parentWindow.linker.minerManager.data.installed.Values);
-            if (MinerList.Count > 0)
-            {
-                // Show the Mining tabs
-                ShowMiningTab = true;
-
-                // Load default miner data
-                selectedMiner = new KeyValuePair<int,Miner>(0, MinerList[0]);
-                IntensityInput = selectedMiner.Value.customIntensity;
-                CustomParameters = selectedMiner.Value.customParameters;
-            }
+            LoadMiningView();
 
             // TODO: Make system so that cpuminer is replaced by cpuminer-opt when checking the box
 
@@ -161,6 +181,31 @@ namespace EasyGarlic {
 
             // Hide CPU Options
             ShowCPUOptions = false;
+            EnableOptions = true;
+        }
+
+        private void LoadMiningView()
+        {
+            // Load different Miner items in ComboBox
+            MinerList = new List<Miner>(parentWindow.linker.minerManager.data.installed.Values);
+            if (MinerList.Count > 0)
+            {
+                // Show the Mining tabs
+                ShowMiningTab = true;
+
+                // Load default miner data
+                selectedMiner = new KeyValuePair<int, Miner>(0, MinerList[0]);
+                minerComboBox.SelectedIndex = 0;
+                IntensityInput = selectedMiner.Value.customIntensity;
+                CustomParameters = selectedMiner.Value.customParameters;
+            }
+            else
+            {
+                ShowMiningTab = false;
+                EnableOptions = false;
+                selectedMiner = new KeyValuePair<int, Miner>(-1, null);
+                minerComboBox.SelectedIndex = -1;
+            }
         }
 
         private async void SettingsWindow_Closing(object sender, CancelEventArgs e)
@@ -171,7 +216,7 @@ namespace EasyGarlic {
             {
                 installed[MinerList[i].GetID()] = MinerList[i];
             }
-            
+
             // Save Data
             await parentWindow.linker.minerManager.data.SaveAsync();
 
@@ -184,15 +229,27 @@ namespace EasyGarlic {
         #region Data Changed
         private void MinerListCombo_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            selectedMiner = new KeyValuePair<int, Miner>((sender as ComboBox).SelectedIndex, MinerList[(sender as ComboBox).SelectedIndex]);
-
-            // Use CPU view
-            if (selectedMiner.Value.type == "cpu")
+            // Check if miners are installed
+            int selectedIndex = (sender as ComboBox).SelectedIndex;
+            if (selectedIndex >= 0 && MinerList.Count > selectedIndex)
             {
-                ShowCPUOptions = true;
+                // Set selected miner
+                selectedMiner = new KeyValuePair<int, Miner>((sender as ComboBox).SelectedIndex, MinerList[selectedIndex]);
+
+                // Use CPU view
+                if (selectedMiner.Value.type == "cpu")
+                {
+                    ShowCPUOptions = true;
+                }
+                else
+                {
+                    ShowCPUOptions = false;
+                }
             }
             else
             {
+                // Disable everything
+                (sender as ComboBox).SelectedIndex = -1;
                 ShowCPUOptions = false;
             }
         }
@@ -204,7 +261,7 @@ namespace EasyGarlic {
                 selectedMiner.Value.customIntensity = IntensityInput;
             }
         }
-        
+
         private void CustomParametersInput_ValueChanged(object sender, TextChangedEventArgs e)
         {
             if (selectedMiner.Value != null)
@@ -214,5 +271,27 @@ namespace EasyGarlic {
         }
 
         #endregion
+
+        private async void UninstallMinerButton_Click(object sender, RoutedEventArgs e)
+        {
+            Progress<string> uninstallProgress = new Progress<string>((data) =>
+            {
+                InfoText = data;
+            });
+
+            // Uninstall
+            await parentWindow.linker.minerManager.UninstallMiner(selectedMiner.Value, uninstallProgress);
+
+            // TODO: Somehow it crashes here
+            // Refresh View
+            LoadMiningView();
+        }
+
+        private void ResetDefaultsButton_Click(object sender, RoutedEventArgs e)
+        {
+            IntensityInput = 0;
+            CustomParameters = "";
+            InfoText = "Reset settings for \"" + selectedMiner.Value.GetID() + "\" to default";
+        }
     }
 }

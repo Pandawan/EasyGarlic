@@ -4,12 +4,13 @@ An easy to use Garlicoin Miner
 ## TODO
 - Add support for multiple GPUs
 - Add support for SGMiner (AMD) and CPUMiner (cpu)
-- Add advanced option to switch to cpuminer-opt
-- Add custom parameters options
+- Allow installing multiple miners at once (it already works, just make the info text work too)
+- OK Add advanced option to switch to cpuminer-opt
+- OK Add custom parameters options
 - Add more info on Mining Status
 - Add info like estimated reward & estimated earned
 - Add real logo & icons
-- Make icons look cleaner
+- OK Make icons look cleaner
 - Make stratum use the best choice? (prefer dynamic 3333)
 - Show more pool info when mining
 
