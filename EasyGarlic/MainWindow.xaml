@@ -76,9 +76,9 @@
                     <Grid.RowDefinitions>
                         <RowDefinition Height="1*" />
                     </Grid.RowDefinitions>
-                    <ToggleButton Content="Nvidia GPU" Width="90" Height="90" Grid.Row="1" Grid.Column="0" FontSize="14" Checked="MiningNvidia_Checked" Unchecked="MiningNvidia_Unchecked"/>
-                    <ToggleButton Content="AMD GPU" Width="90" Height="90" Grid.Row="1" Grid.Column="1" FontSize="14" Checked="MiningAMD_Checked" Unchecked="MiningAMD_Unchecked"/>
-                    <ToggleButton Content="CPU" Width="90" Height="90" Grid.Row="1" Grid.Column="2" FontSize="14" Checked="MiningCPU_Checked" Unchecked="MiningCPU_Unchecked"/>
+                    <ToggleButton Name="mineNvidiaButton" Content="Nvidia GPU" Width="90" Height="90" Grid.Row="1" Grid.Column="0" FontSize="14" Checked="MiningNvidia_Checked" Unchecked="MiningNvidia_Unchecked"/>
+                    <ToggleButton Name="mineCPUButton" Content="AMD GPU" Width="90" Height="90" Grid.Row="1" Grid.Column="1" FontSize="14" Checked="MiningAMD_Checked" Unchecked="MiningAMD_Unchecked" IsEnabled="False"/>
+                    <ToggleButton Name="mineAMDButton" Content="CPU" Width="90" Height="90" Grid.Row="1" Grid.Column="2" FontSize="14" Checked="MiningCPU_Checked" Unchecked="MiningCPU_Unchecked"/>
                 </Grid>
             </Grid>
             <!-- Start & Stop Buttons -->

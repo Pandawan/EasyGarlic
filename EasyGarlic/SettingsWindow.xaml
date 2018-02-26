@@ -44,10 +44,32 @@
                             <!-- CPU: Use opt miner -->
                             <CheckBox Content="Use cpuminer-opt" Margin="10,143,256,0" FontSize="14" Visibility="{Binding ShowCPUOptions, Converter={StaticResource BoolToVisibilityConverter}}" Height="32" VerticalAlignment="Top"/>
                         </Grid>
-                        <Label Content="{Binding InfoText}" HorizontalAlignment="Left" Margin="10,0,0,39" VerticalAlignment="Bottom" Width="468" Height="32" FontSize="14" Visibility="{Binding InfoText, Converter={StaticResource StringToBoolConverter}}"/>
+                        <TextBlock Text="{Binding InfoText}" Margin="10,0,10,39" VerticalAlignment="Bottom" Height="32" FontSize="14" Visibility="{Binding InfoText, Converter={StaticResource StringToBoolConverter}}"/>
                         <Button Content="Uninstall Miner" Margin="10,0,246,10" Height="24" VerticalAlignment="Bottom" FontSize="14" Click="UninstallMinerButton_Click" IsEnabled="{Binding EnableOptions}"/>
                         <Button Content="Reset to Defaults" Margin="246,0,10,10" Height="24" VerticalAlignment="Bottom" FontSize="14" Click="ResetDefaultsButton_Click" IsEnabled="{Binding EnableOptions}"/>
                     </Grid>
+                </Grid>
+            </TabItem>
+            <!-- AMD HELP -->
+            <TabItem Header="AMD Help" FontSize="14">
+                <Grid Background="#FFE5E5E5">
+                    <TextBlock TextWrapping="Wrap" TextAlignment="Center" HorizontalAlignment="Stretch" VerticalAlignment="Center">
+                        AMD is currently not supported as I do not own an AMD GPU
+                        <LineBreak/>
+                        If you wish to help me add AMD support,
+                        <LineBreak/>
+                        you can contact me on Discord
+                        <LineBreak/>
+                        <TextBox Text="@Pandawan#4158" Background="Transparent">
+                                <TextBox.Style>
+                                    <Style TargetType="TextBox">
+                                        <Setter Property="IsReadOnly" Value="True" />
+                                        <Setter Property="BorderThickness" Value="0" />
+                                        <Setter Property="TextWrapping" Value="Wrap" />
+                                    </Style>
+                                </TextBox.Style>
+                            </TextBox>
+                    </TextBlock>
                 </Grid>
             </TabItem>
             <!-- About Page -->

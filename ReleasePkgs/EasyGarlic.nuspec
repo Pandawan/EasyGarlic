@@ -1,0 +1,17 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
+  <metadata>
+    <id>EasyGarlic</id>
+    <version>1.0.0</version>
+    <title></title>
+    <authors>Pandawan</authors>
+    <owners>Pandawan</owners>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <licenseUrl>https://github.com/PandawanFr/EasyGarlic/blob/master/LICENSE</licenseUrl>
+    <projectUrl>https://github.com/PandawanFr/EasyGarlic</projectUrl>
+    <description>An easy to use miner for Garlicoin</description>
+  </metadata>
+  <files>
+      <file src="..\EasyGarlic\bin\Release\*.*" target="lib\net45\" exclude="*.pdb;*.vshost.*"/>
+  </files>
+</package>

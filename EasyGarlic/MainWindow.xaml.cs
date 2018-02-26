@@ -16,6 +16,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using Squirrel;
 
 namespace EasyGarlic {
     /// <summary>
@@ -46,6 +47,38 @@ namespace EasyGarlic {
             {
                 LoadingText = data;
             });
+
+            // Check for Updates
+            LoadingText = "Checking for Updates...";
+            logger.Info("Checking for Updates...");
+            try
+            {
+                // TODO: Make it so it applies major updates immediately
+                // TODO: Change this to use a URL instead
+                using (UpdateManager manager = new UpdateManager(@"D:\Projects\VS Projects\EasyGarlic\EasyGarlic\Releases"))
+                {
+                    await manager.UpdateApp();
+                }
+
+            }
+            catch (Exception error)
+            {
+                // Don't show this error in debug mode because it's always gonna happen
+                if (error.Message == "Update.exe not found, not a Squirrel-installed app?")
+                {
+#if !DEBUG
+                logger.Error("Updater: " + error);
+                LoadingText = "Could not check for updates.";
+#endif
+                }
+                else
+                {
+                    logger.Error("Updater: " + error);
+                    LoadingText = "Could not check for updates.";
+                }
+            }
+
+            LoadingText = "Loading...";
 
             // Setup Managers & Linkers
             linker = new Linker();
@@ -91,8 +124,11 @@ namespace EasyGarlic {
             // Stop Mining
             await linker.minerManager.StopMining(progress);
 
-            // Close Settings Window
-            settingsWindow.Close();
+            if (settingsWindow != null)
+            {
+                // Close Settings Window
+                settingsWindow.Close();
+            }
             
             // Save Data
             await linker.minerManager.data.SaveAsync();
@@ -106,7 +142,7 @@ namespace EasyGarlic {
             await Task.Run(() => MainWindow_Loaded(this, null));
         }
 
-        #region WPF Properties
+#region WPF Properties
 
         private bool readyToShow;
         public bool ReadyToShow
@@ -312,9 +348,9 @@ namespace EasyGarlic {
                 handler(this, new PropertyChangedEventArgs(propertyName));
         }
 
-        #endregion
+#endregion
 
-        #region Start & Stop
+#region Start & Stop
 
         private async void Start_Click(object sender, RoutedEventArgs e)
         {
@@ -372,9 +408,9 @@ namespace EasyGarlic {
             ReadyToStart = true;
         }
 
-        #endregion
+#endregion
 
-        #region Mining Buttons
+#region Mining Buttons
 
         private void MiningNvidia_Checked(object sender, RoutedEventArgs e)
         {
@@ -479,9 +515,9 @@ namespace EasyGarlic {
             MiningTabs.Remove(tab);
         }
 
-        #endregion
+#endregion
 
-        #region Input Value Change
+#region Input Value Change
 
         private void PoolListCombo_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
@@ -516,10 +552,16 @@ namespace EasyGarlic {
             linker.minerManager.SaveAddress((sender as TextBox).Text.Trim());
         }
 
-        #endregion
+#endregion
 
         private void SettingsButton_Click(object sender, RoutedEventArgs e)
         {
+            // TODO: Change this so it only does that when ACTUALLY uninstalling
+            // Uncheck buttons, might be uninstalling
+            mineNvidiaButton.IsChecked = false;
+            mineCPUButton.IsChecked = false;
+            mineAMDButton.IsChecked = false;
+            
             settingsWindow = new SettingsWindow(this);
             settingsWindow.ShowDialog();
         }

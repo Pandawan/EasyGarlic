@@ -1,8 +1,4 @@
 ﻿{
-  "appData": {
-    "win": "APP DOWNLOAD URL",
-    "version": "1.0.0"
-  },
   "pools": "https://watchdog.garli.co.in/api/v1/pools",
   "miners": {
     "cpu_win": {
@@ -19,7 +15,7 @@
       "platform": "win",
       "downloadURL": "https://github.com/lenis0012/sgminer-gm/releases/download/5.6.0-allium/sgminer-allium-windows-x86.zip",
       "fileNameZip": "sgminer-allium-windows-x86.zip",
-      "fileNameMine": "sgminer.exe",
+      "fileNameMine": "sgminer-allium-x86/sgminer.exe",
       "version": "5.6.0",
       "algo": "allium",
       "extraParameters": "-p x --thread-concurrency 8193 -I 13 --gpu-platform 0"

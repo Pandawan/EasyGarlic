@@ -169,7 +169,7 @@ namespace EasyGarlic {
             Closing += SettingsWindow_Closing;
         }
 
-        private async void SettingsWindow_Loaded(object sender, RoutedEventArgs e)
+        private void SettingsWindow_Loaded(object sender, RoutedEventArgs e)
         {
             // Load different Miner items in ComboBox
             LoadMiningView();
@@ -282,7 +282,6 @@ namespace EasyGarlic {
             // Uninstall
             await parentWindow.linker.minerManager.UninstallMiner(selectedMiner.Value, uninstallProgress);
 
-            // TODO: Somehow it crashes here
             // Refresh View
             LoadMiningView();
         }

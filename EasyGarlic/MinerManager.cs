@@ -254,16 +254,25 @@ namespace EasyGarlic {
 
             await Task.Run(() =>
             {
-                // Delete ZIP/Downloaded file
-                if (File.Exists(downloadPath))
+                try
                 {
-                    File.Delete(downloadPath);
-                }
+                    // Delete ZIP/Downloaded file
+                    if (File.Exists(downloadPath))
+                    {
+                        File.Delete(downloadPath);
+                    }
 
-                // Delete Install Path
-                if (Directory.Exists(miner.installPath))
+                    // Delete Install Path
+                    if (Directory.Exists(miner.installPath))
+                    {
+                        Directory.Delete(miner.installPath, true);
+                    }
+                }
+                catch(Exception e)
                 {
-                    Directory.Delete(miner.installPath, true);
+                    logger.Error("ERROR while deleting files & folders");
+                    logger.Error(e);
+                    progress.Report("Something went wrong. Please try again later.");
                 }
             });
 
@@ -283,10 +292,22 @@ namespace EasyGarlic {
             // AMD needs some extra parameters
             if (m.type == "amd")
             {
-                command += "@echo off \ncolor 02 \n\nsetx GPU_FORCE_64BIT_PTR 0 \nsetx GPU_MAX_HEAP_SIZE 100 \nsetx GPU_MAX_SINGLE_ALLOC_PERCENT 100 \nsetx GPU_MAX_ALLOC_PERCENT 100 \nsetx GPU_USE_SYNC_OBJECTS 1 \n";
+                command += "@echo off \n\nsetx GPU_FORCE_64BIT_PTR 0 \nsetx GPU_MAX_HEAP_SIZE 100 \nsetx GPU_MAX_SINGLE_ALLOC_PERCENT 100 \nsetx GPU_MAX_ALLOC_PERCENT 100 \nsetx GPU_USE_SYNC_OBJECTS 1 \n";
             }
 
-            command += "\"" + m.installPath + m.fileNameMine + "\"" + " -a " + m.algo + " -o " + pool + " -u " + address + " " + m.extraParameters ;
+            command += "\"" + m.installPath + m.fileNameMine + "\"";
+
+            // Algorithm is diff on amd
+            if (m.type == "amd")
+            {
+                command += " --algorithm " + m.algo;
+            }
+            else
+            {
+                command += " -a " + m.algo;
+            }
+
+            command += " -o " + pool + " -u " + address + " " + m.extraParameters;
 
             // Custom intensity if not 0
             if (m.type == "nvidia" && m.customIntensity != 0)
@@ -296,6 +317,13 @@ namespace EasyGarlic {
             else if (m.type == "amd" && m.customIntensity != 0)
             {
                 command += "-I " + m.customIntensity;
+            }
+
+            // Algorithm is diff on amd
+            if (m.type == "amd")
+            {
+                // Add debug for amd
+                command += " --debug ";
             }
 
             // Add custom parameters last
