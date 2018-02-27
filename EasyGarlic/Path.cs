@@ -10,16 +10,19 @@ namespace EasyGarlic {
 
         public static string GetCurrentDirectory()
         {
-            return Directory.GetCurrentDirectory();
+            return Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + @"\EasyGarlic\" + Config.EXTRA_PATH;
+            //return Directory.GetCurrentDirectory();
         }
 
         public static string GetDataDirectory()
         {
-            string dataPath = GetCurrentDirectory() + @"\data\";
+            string dataPath = GetCurrentDirectory() + @"data\";
             if (!Directory.Exists(dataPath))
             {
                 Directory.CreateDirectory(dataPath);
             }
+
+            Console.WriteLine("Using path " + dataPath);
 
             return dataPath;
         }
@@ -28,14 +31,14 @@ namespace EasyGarlic {
         {
             string dataDir = GetDataDirectory();
 
-            return dataDir + id + @"\";
+            return  dataDir + id + @"\";
         }
 
         public static string GetLocalDataFile()
         {
             string dataDir = GetDataDirectory();
 
-            return dataDir + @"data.json";
+            return System.IO.Path.Combine(dataDir, @"data.json");
         }
     }
 }
