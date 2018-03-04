@@ -162,6 +162,7 @@
     <Compile Include="OutputWindow.xaml.cs">
       <DependentUpon>OutputWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="ProgressReport.cs" />
     <Compile Include="RichTextBoxExtensions.cs" />
     <Compile Include="SettingsWindow.xaml.cs">
       <DependentUpon>SettingsWindow.xaml</DependentUpon>

@@ -45,11 +45,6 @@ namespace EasyGarlic {
             // Setup Loading text
             logger.Info("Loading...");
             LoadingText = "Loading...";
-            
-            Progress<string> loadingProgress = new Progress<string>((data) =>
-            {
-                LoadingText = data;
-            });
 
             // Check for Updates
             LoadingText = "Checking for Updates...";
@@ -83,6 +78,27 @@ namespace EasyGarlic {
 
             LoadingText = "Loading...";
 
+            bool skipAPI = false;
+
+            // Loading progress for the Linker
+            Progress<ProgressReport> loadingProgress = new Progress<ProgressReport>((data) =>
+            {
+                LoadingText = data.message;
+
+                // If there was an error
+                if (data.error != null)
+                {
+                    // Problem while fetching API data
+                    if (data.error.GetType() == typeof(System.Net.WebException))
+                    {
+                        logger.Error(data.message);
+                        logger.Error(data.error);
+                        skipAPI = true;
+                        ConnectionErrors = true;
+                    }
+                }
+            });
+
             // Setup Managers & Linkers
             linker = new Linker();
             await linker.Setup(loadingProgress);
@@ -92,10 +108,29 @@ namespace EasyGarlic {
             {
                 OpenDebugConsole();
             }
-
+            
             // Get Pool List
             logger.Info("Loading Pool List...");
-            PoolList = new List<PoolData>(await linker.networkManager.GetPoolData(linker.networkManager.data.pools));
+            PoolList = new List<PoolData>();
+            // If there were no issues contacting Online Data
+            if (!skipAPI)
+            {
+                // Fetch Pool List
+                try
+                {
+                    PoolList = new List<PoolData>(await linker.networkManager.GetPoolData(linker.networkManager.data.pools));
+                }
+                // If there were issues contacting Pool List
+                catch (System.Net.WebException err)
+                {
+                    // Report error
+                    ((IProgress<ProgressReport>)loadingProgress).Report(new ProgressReport("Could not load Pool Data at " + linker.networkManager.data.pools, err));
+
+                    // Create an empty list 
+                    PoolList = new List<PoolData>();
+                }
+            }
+            // Add Custom item to the Pool List
             PoolList.Add(PoolData.Custom);
 
             // Check Saved Address
@@ -201,6 +236,21 @@ namespace EasyGarlic {
                 infoText = value;
 
                 OnPropertyChanged(nameof(InfoText));
+            }
+        }
+
+        private bool connectionErrors;
+        public bool ConnectionErrors
+        {
+            get
+            {
+                return connectionErrors;
+            }
+            set
+            {
+                connectionErrors = value;
+
+                OnPropertyChanged(nameof(ConnectionErrors));
             }
         }
 

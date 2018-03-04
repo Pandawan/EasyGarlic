@@ -72,6 +72,8 @@ namespace EasyGarlic {
         {
             JObject obj = JObject.Parse(jsonData);
             LocalData deserialized = obj.ToObject<LocalData>();
+            deserialized.dataURL = Config.DATA_URL;
+            deserialized.version = Config.VERSION;
             return deserialized;
         }
 

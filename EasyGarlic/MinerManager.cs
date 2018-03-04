@@ -15,11 +15,11 @@ namespace EasyGarlic {
         public LocalData data;
         private Linker linker;
 
-        public async Task Setup(Linker _linker, IProgress<string> progress)
+        public async Task Setup(Linker _linker, IProgress<ProgressReport> progress)
         {
             linker = _linker;
             logger.Info("Loading Local Data...");
-            progress.Report("Loading Local Data...");
+            progress.Report(new ProgressReport("Loading Local Data..."));
             // Create or Load LocalData
             data = new LocalData();
             if (data.Exists())
@@ -222,10 +222,17 @@ namespace EasyGarlic {
         {
             OnlineData onlineData = linker.networkManager.data;
 
-            if (linker.networkManager.data.miners.ContainsKey(id) && linker.networkManager.data.miners[id] != null)
+            // Don't want to use Online Data if it doesn't exist
+            if (onlineData == null)
+            {
+                progress.Report("Could not fetch Online Data");
+                return;
+            }
+
+            if (onlineData.miners.ContainsKey(id) && onlineData.miners[id] != null)
             {
                 // Get data for miner to install
-                OnlineMiner minerToInstall = linker.networkManager.data.miners[id];
+                OnlineMiner minerToInstall = onlineData.miners[id];
                 string downloadPath = Path.GetDataDirectory() + minerToInstall.fileNameZip;
                 // If it's a direct zip, use direct file downloadPath
                 if (minerToInstall.fileNameZip == Config.NO_ZIP_KW)

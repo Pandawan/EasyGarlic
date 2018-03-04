@@ -19,13 +19,21 @@ namespace EasyGarlic {
 
         private static Logger logger = LogManager.GetLogger("NetworkLogger");
 
-        public async Task Setup(Linker _linker, IProgress<string> progress)
+        public async Task Setup(Linker _linker, IProgress<ProgressReport> progress)
         {
             linker = _linker;
             logger.Info("Loading Online Data...");
-            progress.Report("Loading Online Data...");
+            progress.Report(new ProgressReport("Loading Online Data..."));
+
             // Load Data from API
-            data = OnlineData.LoadData(await FetchURLData(linker.minerManager.GetDataURL()));
+            try
+            {
+                data = OnlineData.LoadData(await FetchURLData(linker.minerManager.GetDataURL()));
+            }
+            catch (WebException e)
+            {
+                progress.Report(new ProgressReport("Could not load Online Data at " + linker.minerManager.GetDataURL(), e));
+            }
         }
 
         public async Task<string> FetchURLData(string url)
@@ -83,10 +91,10 @@ namespace EasyGarlic {
         public async Task InstallInFolder(string file, string path)
         {
             string destinationPath = System.IO.Path.Combine(path, System.IO.Path.GetFileName(file));
-            
+
             await Task.Run(() => { Directory.CreateDirectory(path); File.Move(file, destinationPath); });
         }
-        
+
         // Get the list of pools from Watchdog
         public async Task<PoolData[]> GetPoolData(string url)
         {

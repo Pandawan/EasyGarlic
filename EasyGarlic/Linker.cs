@@ -6,11 +6,10 @@ using System.Threading.Tasks;
 
 namespace EasyGarlic {
     public class Linker {
-
         public NetworkManager networkManager;
         public MinerManager minerManager;
         
-        public async Task Setup(IProgress<string> progress)
+        public async Task Setup(IProgress<ProgressReport> progress)
         {
             // Create a MinerManager & Setup
             minerManager = new MinerManager();
