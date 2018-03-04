@@ -1,15 +1,12 @@
-﻿using SharpCompress.Archives;
+﻿using Newtonsoft.Json.Linq;
+using NLog;
+using SharpCompress.Archives;
 using SharpCompress.Readers;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Text;
-using System.Threading.Tasks;
-using NLog;
 using System.IO;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
+using System.Net;
+using System.Threading.Tasks;
 
 namespace EasyGarlic {
     public class NetworkManager {

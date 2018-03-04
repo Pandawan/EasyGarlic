@@ -1,22 +1,13 @@
 ﻿using NLog;
+using Squirrel;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Controls.Primitives;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-using Squirrel;
 
 namespace EasyGarlic {
     /// <summary>
@@ -102,13 +93,13 @@ namespace EasyGarlic {
             // Setup Managers & Linkers
             linker = new Linker();
             await linker.Setup(loadingProgress);
-            
+
             // Start Output Window
             if (linker.minerManager.data.openConsole)
             {
                 OpenDebugConsole();
             }
-            
+
             // Get Pool List
             logger.Info("Loading Pool List...");
             PoolList = new List<PoolData>();
@@ -151,7 +142,7 @@ namespace EasyGarlic {
             EnableAdvanced = true;
             ShowCustomPool = false;
             InfoText = "Ready!";
-            
+
             // Tell it we're done
             logger.Info("Finished Loading.");
         }
@@ -159,7 +150,7 @@ namespace EasyGarlic {
         private async void MainWindow_Closing(object sender, CancelEventArgs e)
         {
             logger.Info("Closing...");
-            
+
             Progress<string> progress = new Progress<string>((data) =>
             {
                 InfoText = data;
@@ -192,7 +183,7 @@ namespace EasyGarlic {
             await Task.Run(() => MainWindow_Loaded(this, null));
         }
 
-#region WPF Properties
+        #region WPF Properties
 
         private bool readyToShow;
         public bool ReadyToShow
@@ -374,7 +365,7 @@ namespace EasyGarlic {
                 OnPropertyChanged(nameof(MiningInfoText));
             }
         }
-        
+
         private bool enableAdvanced;
         public bool EnableAdvanced
         {
@@ -413,9 +404,9 @@ namespace EasyGarlic {
                 handler(this, new PropertyChangedEventArgs(propertyName));
         }
 
-#endregion
+        #endregion
 
-#region Start & Stop
+        #region Start & Stop
 
         private async void Start_Click(object sender, RoutedEventArgs e)
         {
@@ -424,7 +415,7 @@ namespace EasyGarlic {
                 // TODO: Add an Amount Earned feature
                 InfoText = data.info;
                 MiningTab tab = MiningTabs.FirstOrDefault(x => x.id.Contains(data.id) || data.id.Contains(x.id));
-                
+
                 tab.Data.HashrateText = "Hashrate: " + data.hashRate;
                 tab.Data.LastBlockText = "Block: " + data.lastBlock;
                 tab.Data.AcceptedSharesText = "Accepted Shares: " + data.acceptedShares;
@@ -473,11 +464,14 @@ namespace EasyGarlic {
             ReadyToStart = true;
         }
 
-#endregion
+        #endregion
 
-#region Mining Buttons
+        #region Mining Buttons
 
-        private void CheckMiner(string id)
+        // Use a dictionary to show multiple steps happening at once
+        private Dictionary<string, string> progressSteps = new Dictionary<string, string>();
+
+        private async Task CheckMiner(string id)
         {
             Progress<bool> progress = new Progress<bool>((data) =>
             {
@@ -485,17 +479,26 @@ namespace EasyGarlic {
             });
             Progress<string> installingProgress = new Progress<string>((data) =>
             {
-                InfoText = data;
+                // Set its data
+                progressSteps[id] = data;
+
+                // Change info text to update with every steps' info
+                InfoText = String.Join(", ", progressSteps.Values);
             });
+
+            // Add the current step
+            progressSteps.Add(id, "");
 
             // Add to tab list
             MiningTab tab = new MiningTab() { Header = Utilities.IDToTitle(id), id = id };
             tab.Data = new MiningTabData();
             MiningTabs.Add(tab);
 
-#pragma warning disable 4014
-            linker.minerManager.EnableMiner(id, progress, installingProgress);
-#pragma warning restore 4014
+            // Enable And/Or Download the miner
+            await linker.minerManager.EnableMiner(id, progress, installingProgress);
+
+            // Remove from the steps
+            progressSteps.Remove(id);
         }
 
         private void UncheckMiner(string id)
@@ -511,9 +514,9 @@ namespace EasyGarlic {
             MiningTabs.Remove(tab);
         }
 
-        private void MiningNvidia_Checked(object sender, RoutedEventArgs e)
+        private async void MiningNvidia_Checked(object sender, RoutedEventArgs e)
         {
-            CheckMiner("nvidia");
+            await CheckMiner("nvidia");
         }
 
         private void MiningNvidia_Unchecked(object sender, RoutedEventArgs e)
@@ -521,9 +524,9 @@ namespace EasyGarlic {
             UncheckMiner("nvidia");
         }
 
-        private void MiningAMD_Checked(object sender, RoutedEventArgs e)
+        private async void MiningAMD_Checked(object sender, RoutedEventArgs e)
         {
-            CheckMiner("amd");
+            await CheckMiner("amd");
         }
 
         private void MiningAMD_Unchecked(object sender, RoutedEventArgs e)
@@ -531,9 +534,9 @@ namespace EasyGarlic {
             UncheckMiner("amd");
         }
 
-        private void MiningCPU_Checked(object sender, RoutedEventArgs e)
+        private async void MiningCPU_Checked(object sender, RoutedEventArgs e)
         {
-            CheckMiner("cpu");
+            await CheckMiner("cpu");
         }
 
         private void MiningCPU_Unchecked(object sender, RoutedEventArgs e)
@@ -541,9 +544,9 @@ namespace EasyGarlic {
             UncheckMiner("cpu");
         }
 
-#endregion
+        #endregion
 
-#region Input Value Change
+        #region Input Value Change
 
         private void PoolListCombo_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
@@ -578,7 +581,7 @@ namespace EasyGarlic {
             linker.minerManager.SaveAddress((sender as TextBox).Text.Trim());
         }
 
-#endregion
+        #endregion
 
         private void SettingsButton_Click(object sender, RoutedEventArgs e)
         {
@@ -587,11 +590,12 @@ namespace EasyGarlic {
             mineNvidiaButton.IsChecked = false;
             mineCPUButton.IsChecked = false;
             mineAMDButton.IsChecked = false;
-            
+
             settingsWindow = new SettingsWindow(this);
             settingsWindow.ShowDialog();
         }
 
+        // Open the debug console and manage it here
         public void OpenDebugConsole()
         {
             if (outputWindow == null)

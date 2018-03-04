@@ -1,13 +1,10 @@
-﻿using System;
+﻿using NLog;
+using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Diagnostics;
-using System.Threading;
 using System.Management;
-using NLog;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 
 namespace EasyGarlic {
     public class Command {
@@ -172,7 +169,7 @@ namespace EasyGarlic {
                         Match regularMatch = Regex.Match(e.Data, @"(?:\[[0-9-: ]+\])(?:.*GPU #)(\d+)(?:: )([\d]+.+Hz)(?: )([\d]+.+H\/W)(?: )([\d]+W)(?: )([\d]+C)(?: FAN )([\d]+%)");
                         if (regularMatch.Success)
                         {
-                            status.temperature = regularMatch.Groups[4].Value;
+                            status.temperature = regularMatch.Groups[5].Value;
                         }
 
                         // 0 = all, 1 = block count, 2 = diff
@@ -247,7 +244,7 @@ namespace EasyGarlic {
                             // Accepted = accepted
                             status.acceptedShares = int.Parse(acceptedMatch.Groups[1].Value);
                         }
-                        
+
                         // Block Value
                         // 0 = all, 1 = block count, 2 = diff
                         Match blockMatch = Regex.Match(e.Data, @"(?:\[[0-9-: ]+\])(?:.*allium block )(\d*)(?:.*diff )([\d\.]*)");
@@ -256,7 +253,7 @@ namespace EasyGarlic {
                             status.lastBlock = blockMatch.Groups[1].Value;
                         }
                     }
-                    
+
                     // Report status change
                     status.progress.Report(status);
                 }

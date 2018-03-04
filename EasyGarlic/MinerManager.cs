@@ -1,11 +1,9 @@
-﻿using System;
+﻿using NLog;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
-using SharpCompress;
-using NLog;
 
 namespace EasyGarlic {
     public class MinerManager {
@@ -45,7 +43,7 @@ namespace EasyGarlic {
             status.info = "Starting miners " + String.Join(", ", minersToUse);
             logger.Info(status.info);
             progress.Report(status);
-            
+
             List<Task> miningTasks = new List<Task>();
 
             for (int i = 0; i < minersToUse.Length; i++)
@@ -102,7 +100,7 @@ namespace EasyGarlic {
                 progress.Report("No miners to stop.");
                 return;
             }
-            
+
             logger.Info("Stopping all miners...");
             progress.Report("Stopping all miners...");
 
@@ -310,7 +308,7 @@ namespace EasyGarlic {
                         Directory.Delete(miner.installPath, true);
                     }
                 }
-                catch(Exception e)
+                catch (Exception e)
                 {
                     logger.Error("ERROR while deleting files & folders");
                     logger.Error(e);
@@ -320,7 +318,7 @@ namespace EasyGarlic {
 
             data.installed.Remove(miner.GetID());
             await data.SaveAsync();
-            
+
             logger.Info("Finished uninstalling miner \"" + miner.GetID() + "\"");
             progress.Report("Finished uninstalling miner \"" + miner.GetID() + "\"");
 
@@ -370,7 +368,7 @@ namespace EasyGarlic {
 
             // Add custom parameters last
             command += m.customParameters;
-            
+
             return command;
         }
 
@@ -381,7 +379,7 @@ namespace EasyGarlic {
                 case PlatformID.Win32NT:
                     return "win";
                 // TODO: Add Mac support
-                case PlatformID.MacOSX: 
+                case PlatformID.MacOSX:
                     return "";
                 case PlatformID.Unix:
                     return "nix";

@@ -1,13 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Net;
 
 namespace EasyGarlic {
     public class APIConnect {
-        
+
         public struct Request {
             public string command;
             public string parameter;
@@ -20,11 +15,11 @@ namespace EasyGarlic {
         }
 
         private string connectURL;
-        
+
         public APIConnect()
         {
             connectURL = "127.0.0.1:4028";
-            
+
             // TODO: Make it work for AMD
         }
 

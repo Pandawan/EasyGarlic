@@ -1,9 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace EasyGarlic {
     public static class Path {
@@ -29,7 +25,7 @@ namespace EasyGarlic {
         {
             string dataDir = GetDataDirectory();
 
-            return  dataDir + id + @"\";
+            return dataDir + id + @"\";
         }
 
         public static string GetLocalDataFile()

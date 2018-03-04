@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 
 namespace EasyGarlic {
     public enum MinerStatus {
@@ -13,7 +8,7 @@ namespace EasyGarlic {
     }
 
     public class Miner {
-        
+
         // Basic Info
         public string type;
         public string platform;
@@ -42,7 +37,7 @@ namespace EasyGarlic {
 
         [JsonIgnore]
         public Command miningProcess;
-        
+
         public string GetID()
         {
             return type + "_" + platform + (alt ? "_alt" : "");
@@ -50,7 +45,7 @@ namespace EasyGarlic {
 
         public override string ToString()
         {
-            return GetID() + ":{ " + "algo:" + algo + ", extraParams:" + extraParameters + ", fileZip: " + fileNameZip + ", fileMine: " + fileNameMine + " }"; 
+            return GetID() + ":{ " + "algo:" + algo + ", extraParams:" + extraParameters + ", fileZip: " + fileNameZip + ", fileMine: " + fileNameMine + " }";
         }
     }
 

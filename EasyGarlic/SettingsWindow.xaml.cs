@@ -242,6 +242,7 @@ namespace EasyGarlic {
             {
                 // Show the Mining tabs
                 ShowMiningTab = true;
+                EnableOptions = true;
 
                 // Load default miner data
                 selectedMiner = new KeyValuePair<int, Miner>(index, MinerList[index]);

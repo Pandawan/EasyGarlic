@@ -1,10 +1,8 @@
 ﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using NLog;
-using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -27,7 +25,7 @@ namespace EasyGarlic {
 
         // Currently installed miners
         public Dictionary<string, Miner> installed = new Dictionary<string, Miner>();
-        
+
         // TODO: Make SavedPool (currently it's just a value that's not used)
         // Could do that by saving a PoolData object on MainWindow and use those values whenever Custom is selected (rather than editing the one from the List)
         private PoolData savedPool;

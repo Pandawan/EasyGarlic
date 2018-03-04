@@ -1,15 +1,10 @@
 ﻿using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace EasyGarlic {
     public class PoolData {
 
-        public static PoolData Custom = new PoolData() {
+        public static PoolData Custom = new PoolData()
+        {
             id = -1,
             name = "Custom",
             website = "",
@@ -35,7 +30,7 @@ namespace EasyGarlic {
         {
             return stratum[0];
         }
-        
+
         public override string ToString()
         {
             return name + ": " + JsonConvert.SerializeObject(this);
