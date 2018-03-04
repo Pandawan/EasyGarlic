@@ -225,9 +225,11 @@ namespace EasyGarlic {
             // Don't want to use Online Data if it doesn't exist
             if (onlineData == null)
             {
-                progress.Report("Could not fetch Online Data");
+                progress.Report("Could not fetch Online Data when installing");
                 return;
             }
+
+            // TODO: Might want to add a bunch of try catch for download and zip
 
             if (onlineData.miners.ContainsKey(id) && onlineData.miners[id] != null)
             {

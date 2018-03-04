@@ -2,12 +2,14 @@
 An easy to use Garlicoin Miner
 
 ## TODO
-- Add console debug
-- Add support for user/password for pools that require it
 - Add support for multi-download (it already works, just make the info text work too)
 - Add AMD support (need and AMD card to test and contact API system)
 - Make new logo & icons
 - Display more information when mining (pool, pool's data...)
+- Add more error checking (connection errors, downloading errors)
+- Add auto sending of log when app crashes (will also need computer's info to analyze data)
+- Add some sort of data analysis tool (user count, download count...)
+- Change Release URL to GitHub Releases (instead of local path)
 - Remove Xceed WPF (too many DLLs)
 
 ## Testing
