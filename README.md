@@ -2,7 +2,6 @@
 An easy to use Garlicoin Miner
 
 ## TODO
-- Add support for multi-download (it already works, just make the info text work too)
 - Add AMD support (need and AMD card to test and contact API system)
 - Make new logo & icons
 - Display more information when mining (pool, pool's data...)
