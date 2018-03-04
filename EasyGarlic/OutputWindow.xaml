@@ -1,0 +1,22 @@
+﻿<Window x:Class="EasyGarlic.OutputWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:EasyGarlic"
+        mc:Ignorable="d"
+        Title="EasyGarlic - Console" Height="400" Width="800">
+    <Grid>
+        <RichTextBox Name="MessageView"  Margin="0,0,0,0" IsReadOnly="True" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.VerticalScrollBarVisibility="Auto">
+            <RichTextBox.Style>
+                <Style>
+                    <Setter Property="RichTextBox.FontSize" Value="14" />
+                    <Setter Property="RichTextBox.Background" Value="#FF000000" />
+                    <Setter Property="RichTextBox.Foreground" Value="#FFFFFFFF" />
+                    <Setter Property="RichTextBox.FontFamily" Value="Consolas" />
+                    <Setter Property="Paragraph.LineHeight" Value="0.5"/>
+                </Style>
+            </RichTextBox.Style>
+        </RichTextBox>
+    </Grid>
+</Window>

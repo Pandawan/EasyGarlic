@@ -24,7 +24,7 @@ namespace EasyGarlic {
             data = new LocalData();
             if (data.Exists())
             {
-                await data.LoadAsync();
+                data = await LocalData.LoadAsync();
             }
             else
             {
@@ -137,33 +137,66 @@ namespace EasyGarlic {
             // TODO: Add auto miner update
             if (data.installed.ContainsKey(realId))
             {
-                data.installed[realId].status = MinerStatus.Enabled;
+                // If we're using the alternate miner
+                if (data.installed[realId].usingAlt)
+                {
+                    // Check that it is installed
+                    if (data.installed.ContainsKey(realId + "_alt"))
+                    {
+                        data.installed[realId + "_alt"].status = MinerStatus.Enabled;
+                        logger.Info("Enabled miner " + realId + "_alt");
+                    }
+                    // If not yet installed, install it now
+                    else
+                    {
+                        progress.Report(false);
+                        await InstallMiner(realId + "_alt", installing);
+                        data.installed[realId + "_alt"].status = MinerStatus.Enabled;
+
+                        progress.Report(true);
+                        logger.Info("Enabled miner " + realId + "_alt");
+                    }
+                }
+                // If using the default miner
+                else
+                {
+                    data.installed[realId].status = MinerStatus.Enabled;
+                    logger.Info("Enabled miner " + realId);
+                }
                 progress.Report(true);
             }
             else
             {
+                // Install the miner if not installed yet
                 progress.Report(false);
-                // TODO: Install the correct miner that was asked
                 await InstallMiner(realId, installing);
                 data.installed[realId].status = MinerStatus.Enabled;
 
                 progress.Report(true);
+                logger.Info("Enabled miner " + realId);
             }
-
-            logger.Info("Enabled miner " + realId);
         }
 
         public void DisableMiner(string id, IProgress<bool> progress)
         {
             string realId = id + "_" + GetCurrentPlatform();
 
-            if (data.installed.ContainsKey(realId))
+            // If the miner exists and it isn't disabled, disable it
+            if (data.installed.ContainsKey(realId) && data.installed[realId].status != MinerStatus.Disabled)
             {
                 data.installed[realId].status = MinerStatus.Disabled;
 
                 logger.Info("Disabled miner " + realId);
             }
-            
+
+            // If the alt miner exists and it isn't disabled, disable it 
+            if (data.installed.ContainsKey(realId + "_alt") && data.installed[realId + "_alt"].status != MinerStatus.Disabled)
+            {
+                data.installed[realId + "_alt"].status = MinerStatus.Disabled;
+
+                logger.Info("Disabled miner " + realId + "_alt");
+            }
+
             logger.Debug("Using miners: " + String.Join(", ", GetMinersWithStatus(MinerStatus.Enabled)));
 
             // Report true if there still are miners that are available to mine

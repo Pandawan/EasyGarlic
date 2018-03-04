@@ -2,16 +2,13 @@
 An easy to use Garlicoin Miner
 
 ## TODO
-- Remove Xceed WPF, too many DLLs just for a simple number picker
-- Add support for multiple GPUs
-- Add support for SGMiner (AMD)
-- Allow installing multiple miners at once (it already works, just make the info text work too)
-- Add advanced option to switch to cpuminer-opt
-- Add more info on Mining Status
-- Add info like estimated reward & estimated earned
-- Add real logo & icons
-- Make stratum use the best choice? (prefer dynamic 3333)
-- Show more pool info when mining
+- Add console debug
+- Add support for user/password for pools that require it
+- Add support for multi-download (it already works, just make the info text work too)
+- Add AMD support (need and AMD card to test and contact API system)
+- Make new logo & icons
+- Display more information when mining (pool, pool's data...)
+- Remove Xceed WPF (too many DLLs)
 
 ## Testing
 Just open the SLN file in VS 2017 (2015 should work too), and click Start (in Debug Mode).

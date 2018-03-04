@@ -18,11 +18,16 @@ namespace EasyGarlic {
         public string version = Config.VERSION;
         // Where to fetch new miner data
         public string dataURL = Config.DATA_URL;
-        // Currently installed miners
-        public Dictionary<string, Miner> installed = new Dictionary<string, Miner>();
 
+        // Saved GRLC address to autofill data
         public string savedAddress;
 
+        // Whether or not to open the debug console automaticall on start
+        public bool openConsole;
+
+        // Currently installed miners
+        public Dictionary<string, Miner> installed = new Dictionary<string, Miner>();
+        
         // TODO: Make SavedPool (currently it's just a value that's not used)
         // Could do that by saving a PoolData object on MainWindow and use those values whenever Custom is selected (rather than editing the one from the List)
         private PoolData savedPool;
@@ -51,7 +56,7 @@ namespace EasyGarlic {
         }
 
         // Load the file content from JSON with async methods
-        public async Task LoadAsync()
+        public static async Task<LocalData> LoadAsync()
         {
             string savePath = Path.GetLocalDataFile();
 
@@ -59,16 +64,15 @@ namespace EasyGarlic {
 
             logger.Debug("LocalData JSON: " + json);
 
-            LoadData(json);
+            return LoadData(json);
         }
 
         // Loads the given JSON data into a LocalData object
-        private void LoadData(string jsonData)
+        private static LocalData LoadData(string jsonData)
         {
             JObject obj = JObject.Parse(jsonData);
             LocalData deserialized = obj.ToObject<LocalData>();
-            installed = deserialized.installed;
-            savedAddress = deserialized.savedAddress;
+            return deserialized;
         }
 
     }

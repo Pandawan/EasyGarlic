@@ -17,6 +17,7 @@ namespace EasyGarlic {
         // Basic Info
         public string type;
         public string platform;
+        public bool alt;
 
         // Installation Info
         public string installPath;
@@ -33,6 +34,9 @@ namespace EasyGarlic {
         public int customIntensity;
         public string customParameters;
 
+        // Whether or not the alt is being used
+        public bool usingAlt;
+
         [JsonIgnore]
         public MinerStatus status = MinerStatus.Disabled;
 
@@ -41,7 +45,7 @@ namespace EasyGarlic {
         
         public string GetID()
         {
-            return type + "_" + platform;
+            return type + "_" + platform + (alt ? "_alt" : "");
         }
 
         public override string ToString()

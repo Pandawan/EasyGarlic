@@ -28,6 +28,7 @@ namespace EasyGarlic {
         private static Logger headerLogger = LogManager.GetLogger("HeaderLogger");
         public Linker linker;
         private SettingsWindow settingsWindow;
+        public OutputWindow outputWindow;
 
         public MainWindow()
         {
@@ -40,9 +41,11 @@ namespace EasyGarlic {
         private async void MainWindow_Loaded(object sender, RoutedEventArgs e)
         {
             headerLogger.Info("");
-            logger.Info("Loading...");
+
             // Setup Loading text
+            logger.Info("Loading...");
             LoadingText = "Loading...";
+            
             Progress<string> loadingProgress = new Progress<string>((data) =>
             {
                 LoadingText = data;
@@ -83,6 +86,12 @@ namespace EasyGarlic {
             // Setup Managers & Linkers
             linker = new Linker();
             await linker.Setup(loadingProgress);
+            
+            // Start Output Window
+            if (linker.minerManager.data.openConsole)
+            {
+                OpenDebugConsole();
+            }
 
             // Get Pool List
             logger.Info("Loading Pool List...");
@@ -107,7 +116,7 @@ namespace EasyGarlic {
             EnableAdvanced = true;
             ShowCustomPool = false;
             InfoText = "Ready!";
-
+            
             // Tell it we're done
             logger.Info("Finished Loading.");
         }
@@ -129,7 +138,13 @@ namespace EasyGarlic {
                 // Close Settings Window
                 settingsWindow.Close();
             }
-            
+
+            if (outputWindow != null)
+            {
+                // Close Output Window
+                outputWindow.Close();
+            }
+
             // Save Data
             await linker.minerManager.data.SaveAsync();
 
@@ -380,7 +395,7 @@ namespace EasyGarlic {
             // Log Pool Info
             string poolInfo = (lastPoolDataValue.id == -1 ? "Custom Pool (" + lastPoolDataValue.stratum + ")" : lastPoolDataValue.name + " (" + PoolInput.Trim() + ")");
             MiningInfoText = "Mining on " + poolInfo;
-            logger.Info("Strating miners on " + poolInfo);
+            logger.Info("Starting miners on " + poolInfo);
 
             await linker.minerManager.StartMining(AddressInput.Trim(), PoolInput.Trim(), startingProgress);
 
@@ -412,7 +427,7 @@ namespace EasyGarlic {
 
 #region Mining Buttons
 
-        private void MiningNvidia_Checked(object sender, RoutedEventArgs e)
+        private void CheckMiner(string id)
         {
             Progress<bool> progress = new Progress<bool>((data) =>
             {
@@ -424,95 +439,56 @@ namespace EasyGarlic {
             });
 
             // Add to tab list
-            MiningTab tab = new MiningTab() { Header = Utilities.IDToTitle("nvidia"), id = "nvidia" };
+            MiningTab tab = new MiningTab() { Header = Utilities.IDToTitle(id), id = id };
             tab.Data = new MiningTabData();
             MiningTabs.Add(tab);
 
 #pragma warning disable 4014
-            linker.minerManager.EnableMiner("nvidia", progress, installingProgress);
+            linker.minerManager.EnableMiner(id, progress, installingProgress);
 #pragma warning restore 4014
+        }
 
+        private void UncheckMiner(string id)
+        {
+            Progress<bool> progress = new Progress<bool>((data) =>
+            {
+                ReadyToStart = data;
+            });
+            linker.minerManager.DisableMiner(id, progress);
+
+            // Remove from tab list
+            MiningTab tab = MiningTabs.FirstOrDefault(x => x.id.Contains(id));
+            MiningTabs.Remove(tab);
+        }
+
+        private void MiningNvidia_Checked(object sender, RoutedEventArgs e)
+        {
+            CheckMiner("nvidia");
         }
 
         private void MiningNvidia_Unchecked(object sender, RoutedEventArgs e)
         {
-            Progress<bool> progress = new Progress<bool>((data) =>
-            {
-                ReadyToStart = data;
-            });
-            linker.minerManager.DisableMiner("nvidia", progress);
-
-            // Remove from tab list
-            MiningTab tab = MiningTabs.FirstOrDefault(x => x.id.Contains("nvidia"));
-            MiningTabs.Remove(tab);
+            UncheckMiner("nvidia");
         }
 
         private void MiningAMD_Checked(object sender, RoutedEventArgs e)
         {
-            Progress<bool> progress = new Progress<bool>((data) =>
-            {
-                ReadyToStart = data;
-            });
-            Progress<string> installingProgress = new Progress<string>((data) =>
-            {
-                InfoText = data;
-            });
-
-            // Add to tab list
-            MiningTab tab = new MiningTab() { Header = Utilities.IDToTitle("amd"), id = "amd" };
-            tab.Data = new MiningTabData();
-            MiningTabs.Add(tab);
-
-#pragma warning disable 4014
-            linker.minerManager.EnableMiner("amd", progress, installingProgress);
-#pragma warning restore 4014
+            CheckMiner("amd");
         }
 
         private void MiningAMD_Unchecked(object sender, RoutedEventArgs e)
         {
-            Progress<bool> progress = new Progress<bool>((data) =>
-            {
-                ReadyToStart = data;
-            });
-            linker.minerManager.DisableMiner("amd", progress);
-
-            // Remove from tab list
-            MiningTab tab = MiningTabs.FirstOrDefault(x => x.id.Contains("amd"));
-            MiningTabs.Remove(tab);
+            UncheckMiner("amd");
         }
 
         private void MiningCPU_Checked(object sender, RoutedEventArgs e)
         {
-            Progress<bool> progress = new Progress<bool>((data) =>
-            {
-                ReadyToStart = data;
-            });
-            Progress<string> installingProgress = new Progress<string>((data) =>
-            {
-                InfoText = data;
-            });
-
-            // Add to tab list
-            MiningTab tab = new MiningTab() { Header = Utilities.IDToTitle("cpu"), id = "cpu" };
-            tab.Data = new MiningTabData();
-            MiningTabs.Add(tab);
-
-#pragma warning disable 4014
-            linker.minerManager.EnableMiner("cpu", progress, installingProgress);
-#pragma warning restore 4014
+            CheckMiner("cpu");
         }
 
         private void MiningCPU_Unchecked(object sender, RoutedEventArgs e)
         {
-            Progress<bool> progress = new Progress<bool>((data) =>
-            {
-                ReadyToStart = data;
-            });
-            linker.minerManager.DisableMiner("cpu", progress);
-
-            // Remove from tab list
-            MiningTab tab = MiningTabs.FirstOrDefault(x => x.id.Contains("cpu"));
-            MiningTabs.Remove(tab);
+            UncheckMiner("cpu");
         }
 
 #endregion
@@ -564,6 +540,20 @@ namespace EasyGarlic {
             
             settingsWindow = new SettingsWindow(this);
             settingsWindow.ShowDialog();
+        }
+
+        public void OpenDebugConsole()
+        {
+            if (outputWindow == null)
+            {
+                outputWindow = new OutputWindow();
+                outputWindow.Show();
+
+                outputWindow.Closed += (s, e) =>
+                {
+                    outputWindow = null;
+                };
+            }
         }
     }
 }

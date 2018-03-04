@@ -10,6 +10,16 @@
       "version": "1.0.0",
       "algo": "allium"
     },
+    "cpu_win_alt": {
+      "type": "cpu",
+      "platform": "win",
+      "alt": true,
+      "downloadURL": "https://github.com/JayDDee/cpuminer-opt/files/1756603/cpuminer-opt-3.8.3.3-windows.zip",
+      "fileNameZip": "cpuminer-opt-3.8.3.3-windows.zip",
+      "fileNameMine": "cpuminer-opt-3.8.3.3-windows/cpuminer-sse2.exe",
+      "version": "3.8.3.3",
+      "algo": "allium"
+    },
     "amd_win": {
       "type": "amd",
       "platform": "win",

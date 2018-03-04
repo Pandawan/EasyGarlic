@@ -118,8 +118,9 @@ namespace EasyGarlic {
             // Nvidia Regex Block: (?:\[[0-9-: ]+\])(?:.*allium block )(\d*)(?:.*diff )([\d\.]*)
 
             /// CPU \\\
-            // [2018-02-20 13:43:59] CPU #0: 39.30 kH/s[0m
-            // CPU Regex Regular: (?:\[[0-9-: ]+\])(?:.*CPU #)(\d+)(?:: )([\d]+.+H\/s)
+            // [2018-02-20 13:43:59] CPU #0: 39.30 kH/s[0m      
+            // (OR FOR OPT) [2018-03-02 18:40:29] CPU #2: 420.09 kH, 75.86 kH/s[0m
+            // CPU Regex Regular: (?:\[[0-9-: ]+\])(?:.*CPU #)(\d+)(?:.+ )([\d]+.+H\/s)
 
             // [2018-02-18 21:44:31][01;37m accepted: 1/1 (diff 0.022), 1060.33 kH/s [32myes![0m
             // CPU Regex Accepted: (?:\[[0-9-: ]+\])(?:.*)(?:accepted: )(\d+)(?:\/)(\d+)(?:.*diff )(\d+\.?\d+)(?:.*, )([\d\.]+ .+H\/s)
@@ -146,10 +147,11 @@ namespace EasyGarlic {
                 // If already started reading, read it
                 if (startReading)
                 {
-                    logger.Info("Output from " + id + " process: " + e.Data);
+                    string formattedData = new Regex("(\\[[\\S]+m)").Replace(e.Data, "");
+                    logger.Info("Output " + id + ": " + formattedData);
+                    //logger.Info("Output from " + id + " process: " + e.Data);
 
                     // TODO: Add sgminer support
-                    // TODO: Switch cpuminer to cpuminer-opt https://github.com/JayDDee/cpuminer-opt
                     // TODO: Add up all the mining rates together for all miners rather than just CPU (which would allow multiple miner support)
 
                     // ccminer output
@@ -188,7 +190,7 @@ namespace EasyGarlic {
 
                         // Hashrate
                         // 0 = all, 1 = cpu #, 2 = rate
-                        Match regularMatch = Regex.Match(e.Data, @"(?:\[[0-9-: ]+\])(?:.*CPU #)(\d+)(?:: )([\d]+.+H\/s)");
+                        Match regularMatch = Regex.Match(e.Data, @"(?:\[[0-9-: ]+\])(?:.*CPU #)(\d+)(?:.+ )([\d]+.+H\/s)");
                         if (regularMatch.Success)
                         {
                             // If that key doesn't exist, create it at 0

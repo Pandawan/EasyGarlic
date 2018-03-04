@@ -22,8 +22,6 @@ namespace EasyGarlic {
                 Directory.CreateDirectory(dataPath);
             }
 
-            Console.WriteLine("Using path " + dataPath);
-
             return dataPath;
         }
 
