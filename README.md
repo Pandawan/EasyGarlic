@@ -12,7 +12,8 @@ An easy to use Garlicoin Miner
 - Remove Xceed WPF (too many DLLs)
 
 ## Testing
-Just open the SLN file in VS 2017 (2015 should work too), and click Start (in Debug Mode).
+Just open the SLN file in VS 2017 (2015 should work too), and click Start (in Debug Mode).  
+If you get assembly errors, make sure that you have [imported all the NuGet packages](https://docs.microsoft.com/en-us/nuget/consume-packages/package-restore).
 
 ## Building for Release
 Follow these steps to prepare a new release:
@@ -25,3 +26,11 @@ Follow these steps to prepare a new release:
 
 ## Contributing
 If you want to help, feel free to submit a PR.
+
+## Donate
+Donate to support this project. Thank you!  
+
+BTC: 13xqEPwdfkYFVdQvF596k91mWeUHRJTRjk  
+LTC: LhrWcYnXxnA3TcznRRvkfuZ8TVYNJ2nisU  
+BCH: 1PidoMufaqTyFMgdn37Gf4fCHf1GAKZT8w  
+GRLC: GeVxW6scnydU7RhJZfCTr7eHXmxRFZccrB  
