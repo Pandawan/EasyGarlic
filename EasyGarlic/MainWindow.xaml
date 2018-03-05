@@ -79,7 +79,7 @@
                         <RowDefinition Height="1*" />
                     </Grid.RowDefinitions>
                     <ToggleButton Name="mineNvidiaButton" Content="Nvidia GPU" Width="90" Height="90" Grid.Row="1" Grid.Column="0" FontSize="14" Checked="MiningNvidia_Checked" Unchecked="MiningNvidia_Unchecked"/>
-                    <ToggleButton Name="mineCPUButton" Content="AMD GPU" Width="90" Height="90" Grid.Row="1" Grid.Column="1" FontSize="14" Checked="MiningAMD_Checked" Unchecked="MiningAMD_Unchecked" IsEnabled="False"/>
+                    <ToggleButton Name="mineCPUButton" Content="AMD GPU" Width="90" Height="90" Grid.Row="1" Grid.Column="1" FontSize="14" Checked="MiningAMD_Checked" Unchecked="MiningAMD_Unchecked" IsEnabled="False" ToolTip="See Advanced > AMD HELP"  ToolTipService.InitialShowDelay="0"/>
                     <ToggleButton Name="mineAMDButton" Content="CPU" Width="90" Height="90" Grid.Row="1" Grid.Column="2" FontSize="14" Checked="MiningCPU_Checked" Unchecked="MiningCPU_Unchecked"/>
                 </Grid>
             </Grid>

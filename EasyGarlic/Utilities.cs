@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -33,7 +34,8 @@ namespace EasyGarlic {
             Match match = Regex.Match(value, @"(([\d]+[\d\s\.,/]*)\s([A-Za-z\/]+[^\s\d]))");
             if (match.Success)
             {
-                double initialValue = double.Parse(match.Groups[2].Value);
+				// GDI Americans use . while others use , why you gotta do this
+                double initialValue = double.Parse(match.Groups[2].Value.Replace(',', '.'), CultureInfo.GetCultureInfo("en-US"));
                 double multiplier = (hashUnits.ContainsKey(match.Groups[3].Value.ToUpper()) ? hashUnits[match.Groups[3].Value.ToUpper()] : 0) - (hashUnits.ContainsKey(unit.ToUpper()) ? hashUnits[unit.ToUpper()] : 0);
 
                 return (initialValue * Math.Pow(10, multiplier));
@@ -58,7 +60,7 @@ namespace EasyGarlic {
 
             double convertedY = ConvertHash(y.ToUpper(), bestUnit);
 
-            string sum = (convertedX + convertedY) + " " + bestUnit;
+            string sum = (double)(convertedX + convertedY) + " " + bestUnit;
 
             return sum;
         }

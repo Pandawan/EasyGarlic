@@ -2,14 +2,19 @@
 An easy to use Garlicoin Miner
 
 ## TODO
-- Add AMD support (need and AMD card to test and contact API system)
+- Make it so that loading the `Advanced Mining View` for the first time loads/refreshes its data (cpu miner doesn't load the opt option)
+- Autosave pool settings
+- [Some sort of crash when uninstalling](https://i.imgur.com/9l5vPUJ.png)
+- Add CPU temp 
 - Make new logo & icons
 - Display more information when mining (pool, pool's data...)
 - Add more error checking (connection errors, downloading errors)
 - Add auto sending of log when app crashes (will also need computer's info to analyze data)
 - Add some sort of data analysis tool (user count, download count...)
 - Change Release URL to GitHub Releases (instead of local path)
+- Add AMD support (need and AMD card to test and contact API system)
 - Remove Xceed WPF (too many DLLs)
+
 
 ## Testing
 Just open the SLN file in VS 2017 (2015 should work too), and click Start (in Debug Mode).  
