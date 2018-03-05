@@ -7,7 +7,7 @@
         mc:Ignorable="d"
         Title="EasyGarlic - Console" Height="400" Width="800">
     <Grid>
-        <RichTextBox Name="MessageView"  Margin="0,0,0,0" IsReadOnly="True" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.VerticalScrollBarVisibility="Auto">
+        <RichTextBox Name="MessageView"  Margin="0,0,0,0" IsReadOnly="True" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.VerticalScrollBarVisibility="Auto" OverridesDefaultStyle="True" BorderThickness="0">
             <RichTextBox.Style>
                 <Style>
                     <Setter Property="RichTextBox.FontSize" Value="14" />

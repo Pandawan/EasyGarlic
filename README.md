@@ -2,9 +2,8 @@
 An easy to use Garlicoin Miner
 
 ## TODO
-- Make it so that loading the `Advanced Mining View` for the first time loads/refreshes its data (cpu miner doesn't load the opt option)
 - Autosave pool settings
-- [Some sort of crash when uninstalling](https://i.imgur.com/9l5vPUJ.png)
+- Add a dynamic grid/view for Advanced Mining instead of each component having a specific position and swapping visibility
 - Add CPU temp 
 - Make new logo & icons
 - Display more information when mining (pool, pool's data...)

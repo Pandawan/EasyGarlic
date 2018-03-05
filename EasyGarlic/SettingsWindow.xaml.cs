@@ -147,7 +147,7 @@ namespace EasyGarlic {
                 OnPropertyChanged(nameof(CustomParameters));
             }
         }
-        
+
         private bool useAlternateMiner;
         public bool UseAlternateMiner
         {
@@ -228,10 +228,6 @@ namespace EasyGarlic {
 
             // Load Console Settings
             ShowConsoleOnStart = parentWindow.linker.minerManager.data.openConsole;
-
-            // Hide CPU Options
-            ShowCPUOptions = false;
-            EnableOptions = true;
         }
 
         private void LoadMiningView(int index)
@@ -322,15 +318,21 @@ namespace EasyGarlic {
                 selectedMiner.Value.customParameters = CustomParameters;
             }
         }
-        
+
         private void UseAlternateMiner_Checked(object sender, RoutedEventArgs e)
         {
-            selectedMiner.Value.usingAlt = UseAlternateMiner;
+            if (selectedMiner.Value != null)
+            {
+                selectedMiner.Value.usingAlt = UseAlternateMiner;
+            }
         }
 
         private void UseAlternateMiner_Unchecked(object sender, RoutedEventArgs e)
         {
-            selectedMiner.Value.usingAlt = UseAlternateMiner;
+            if (selectedMiner.Value != null)
+            {
+                selectedMiner.Value.usingAlt = UseAlternateMiner;
+            }
         }
 
         #endregion
@@ -342,8 +344,11 @@ namespace EasyGarlic {
                 InfoText = data;
             });
 
-            // Uninstall
-            await parentWindow.linker.minerManager.UninstallMiner(selectedMiner.Value, uninstallProgress);
+            if (selectedMiner.Value != null)
+            {
+                // Uninstall
+                await parentWindow.linker.minerManager.UninstallMiner(selectedMiner.Value, uninstallProgress);
+            }
 
             // Refresh View
             LoadMiningView(0);
@@ -351,10 +356,13 @@ namespace EasyGarlic {
 
         private void ResetDefaultsButton_Click(object sender, RoutedEventArgs e)
         {
-            IntensityInput = 0;
-            CustomParameters = "";
-            UseAlternateMiner = false;
-            InfoText = "Reset settings for \"" + selectedMiner.Value.GetID() + "\" to default";
+            if (selectedMiner.Value != null)
+            {
+                IntensityInput = 0;
+                CustomParameters = "";
+                UseAlternateMiner = false;
+                InfoText = "Reset settings for \"" + selectedMiner.Value.GetID() + "\" to default";
+            }
         }
 
         private void DebugButton_Click(object sender, RoutedEventArgs e)
