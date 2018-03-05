@@ -13,7 +13,7 @@ An easy to use Garlicoin Miner
 
 ## Testing
 Just open the SLN file in VS 2017 (2015 should work too), and click Start (in Debug Mode).  
-If you get assembly errors, make sure that you have [imported all the NuGet packages](https://docs.microsoft.com/en-us/nuget/consume-packages/package-restore).
+Make sure that your VS installation also includes the NuGet Package Manager, you can learn more about how to install it [here](https://docs.microsoft.com/en-us/nuget/install-nuget-client-tools#visual-studio).  
 
 ## Building for Release
 Follow these steps to prepare a new release:
