@@ -414,14 +414,20 @@ namespace EasyGarlic {
             {
                 // TODO: Add an Amount Earned feature
                 InfoText = data.info;
-                MiningTab tab = MiningTabs.FirstOrDefault(x => x.id.Contains(data.id) || data.id.Contains(x.id));
+
+                // If this is just an overall status rather than a miner status
+                if (data.id == "NONE")
+                {
+                    return;
+                }
+
+                MiningTab tab = MiningTabs.FirstOrDefault(x => (x.id.Contains(data.id) || data.id.Contains(x.id)));
 
                 tab.Data.HashrateText = "Hashrate: " + data.hashRate;
                 tab.Data.LastBlockText = "Block: " + data.lastBlock;
                 tab.Data.AcceptedSharesText = "Accepted Shares: " + data.acceptedShares;
                 tab.Data.RejectedSharesText = "Rejected Shares: " + data.rejectedShares;
                 tab.Data.TemperatureText = "Temperature: " + data.temperature;
-
             });
 
             // Select first tab
@@ -437,7 +443,7 @@ namespace EasyGarlic {
             string poolInfo = (lastPoolDataValue.id == -1 ? "Custom Pool (" + lastPoolDataValue.stratum + ")" : lastPoolDataValue.name + " (" + PoolInput.Trim() + ")");
             MiningInfoText = "Mining on " + poolInfo;
             logger.Info("Starting miners on " + poolInfo);
-
+            
             await linker.minerManager.StartMining(AddressInput.Trim(), PoolInput.Trim(), startingProgress);
 
             EnableAdvanced = true;
@@ -485,13 +491,15 @@ namespace EasyGarlic {
                 // Change info text to update with every steps' info
                 InfoText = String.Join(", ", progressSteps.Values);
             });
+            
+            ReadyToStart = false;
+            EnableAdvanced = false;
 
             // Add the current step
             progressSteps.Add(id, "");
 
             // Add to tab list
-            MiningTab tab = new MiningTab() { Header = Utilities.IDToTitle(id), id = id };
-            tab.Data = new MiningTabData();
+            MiningTab tab = new MiningTab() { Header = Utilities.IDToTitle(id), id = id, Data = new MiningTabData() };
             MiningTabs.Add(tab);
 
             // Enable And/Or Download the miner
@@ -499,6 +507,10 @@ namespace EasyGarlic {
 
             // Remove from the steps
             progressSteps.Remove(id);
+
+
+            ReadyToStart = true;
+            EnableAdvanced = true;
         }
 
         private void UncheckMiner(string id)

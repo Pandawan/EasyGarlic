@@ -37,6 +37,7 @@ namespace EasyGarlic {
             // TODO: Add system so that each GPU has its own mining status and therefore, its own miner info
             MiningStatus status = new MiningStatus();
             status.progress = progress;
+            status.id = "NONE";
 
             string[] minersToUse = GetMinersWithStatus(MinerStatus.Enabled);
 
@@ -52,15 +53,15 @@ namespace EasyGarlic {
 
                 // Custom status for the miner itself
                 MiningStatus minerStatus = new MiningStatus();
-                status.progress = progress;
-                status.id = miner.GetID();
+                minerStatus.progress = progress;
+                minerStatus.id = miner.GetID();
 
                 // If the miner has a problem
                 if (!(await VerifyMiner(miner)))
                 {
-                    status.info = "Miner \"" + miner.GetID() + "\" could not be found, please try reinstalling it.";
-                    logger.Error(status.info);
-                    progress.Report(status);
+                    minerStatus.info = "Miner \"" + miner.GetID() + "\" could not be found, please try reinstalling it.";
+                    logger.Error(minerStatus.info);
+                    progress.Report(minerStatus);
                     return;
                 }
 
@@ -68,7 +69,7 @@ namespace EasyGarlic {
                 // Setup Command Process
                 miner.miningProcess = new Command();
                 miner.miningProcess.Setup(minersToUse[i], true);
-                miner.miningProcess.SetStatus(status);
+                miner.miningProcess.SetStatus(minerStatus);
 
                 // Set Status as Mining
                 miner.status = MinerStatus.Mining;
@@ -83,7 +84,17 @@ namespace EasyGarlic {
             status.info = "Mining...";
             logger.Info(status.info);
             progress.Report(status);
-            await Task.WhenAll(miningTasks);
+
+            try
+            {
+                await Task.WhenAll(miningTasks);
+            }
+            catch (Exception e)
+            {
+                progress.Report(new MiningStatus() { info = "Something went wrong..." });
+                logger.Error("Something went wrong while mining.");
+                logger.Error(e);
+            }
 
             status.info = "Finished mining.";
             logger.Info(status.info);

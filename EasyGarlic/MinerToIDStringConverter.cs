@@ -11,7 +11,7 @@ namespace EasyGarlic {
             {
                 return "Unkown";
             }
-            return ((Miner)value).GetID();
+            return ((Miner)value).GetTitle() + " (" + ((Miner)value).GetID() + ")";
         }
 
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
@@ -20,7 +20,7 @@ namespace EasyGarlic {
             {
                 return "Unkown";
             }
-            return ((Miner)value).GetID();
+            return ((Miner)value).GetTitle() + " (" + ((Miner)value).GetID() + ")";
         }
 
         public object ConvertBack(object value, Type targetType,

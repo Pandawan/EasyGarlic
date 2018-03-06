@@ -34,7 +34,7 @@ namespace EasyGarlic {
             Match match = Regex.Match(value, @"(([\d]+[\d\s\.,/]*)\s([A-Za-z\/]+[^\s\d]))");
             if (match.Success)
             {
-				// GDI Americans use . while others use , why you gotta do this
+                // GDI Americans use . while others use , why you gotta do this
                 double initialValue = double.Parse(match.Groups[2].Value.Replace(',', '.'), CultureInfo.GetCultureInfo("en-US"));
                 double multiplier = (hashUnits.ContainsKey(match.Groups[3].Value.ToUpper()) ? hashUnits[match.Groups[3].Value.ToUpper()] : 0) - (hashUnits.ContainsKey(unit.ToUpper()) ? hashUnits[unit.ToUpper()] : 0);
 
@@ -49,7 +49,7 @@ namespace EasyGarlic {
         {
             return ConvertHash(value, unit) + " " + unit.ToUpper();
         }
-        
+
         // Adds two hashrates together (with unit) and returns a value with the unit from the first one
         public static string AddHashes(string x, string y)
         {
@@ -69,7 +69,7 @@ namespace EasyGarlic {
         {
             return Math.Log(y) / Math.Log(x);
         }
-        
+
         public static string IDToTitle(string id)
         {
             if (id.Contains("nvidia"))
@@ -84,7 +84,14 @@ namespace EasyGarlic {
 
             if (id.Contains("cpu"))
             {
-                return "CPU";
+                if (id.Contains("_alt"))
+                {
+                    return "CPU opt";
+                }
+                else
+                {
+                    return "CPU";
+                }
             }
 
             return "";

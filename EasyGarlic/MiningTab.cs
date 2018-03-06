@@ -84,7 +84,7 @@ namespace EasyGarlic {
                 OnPropertyChanged(nameof(TemperatureText));
             }
         }
-
+        
         public event PropertyChangedEventHandler PropertyChanged;
         protected virtual void OnPropertyChanged(string propertyName)
         {

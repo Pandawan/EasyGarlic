@@ -307,6 +307,7 @@ namespace EasyGarlic {
         {
             if (selectedMiner.Value != null)
             {
+                IntensityInput = (int)(sender as IntegerUpDown).Value;
                 selectedMiner.Value.customIntensity = IntensityInput;
             }
         }
@@ -315,6 +316,7 @@ namespace EasyGarlic {
         {
             if (selectedMiner.Value != null)
             {
+                CustomParameters = (sender as TextBox).Text;
                 selectedMiner.Value.customParameters = CustomParameters;
             }
         }
@@ -323,6 +325,7 @@ namespace EasyGarlic {
         {
             if (selectedMiner.Value != null)
             {
+                UseAlternateMiner = true;
                 selectedMiner.Value.usingAlt = UseAlternateMiner;
             }
         }
@@ -331,6 +334,7 @@ namespace EasyGarlic {
         {
             if (selectedMiner.Value != null)
             {
+                UseAlternateMiner = false;
                 selectedMiner.Value.usingAlt = UseAlternateMiner;
             }
         }

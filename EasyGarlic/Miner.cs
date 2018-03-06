@@ -43,6 +43,11 @@ namespace EasyGarlic {
             return type + "_" + platform + (alt ? "_alt" : "");
         }
 
+        public string GetTitle()
+        {
+            return Utilities.IDToTitle(GetID());
+        }
+
         public override string ToString()
         {
             return GetID() + ":{ " + "algo:" + algo + ", extraParams:" + extraParameters + ", fileZip: " + fileNameZip + ", fileMine: " + fileNameMine + " }";
