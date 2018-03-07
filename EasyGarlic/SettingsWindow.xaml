@@ -30,38 +30,33 @@
                                 </DataTemplate>
                             </ComboBox.ItemTemplate>
                         </ComboBox>
+                        <Separator Height="24" Margin="10,45,10,0" VerticalAlignment="Top"/>
                         <!-- Grid for Miner page content -->
-                        <Grid Margin="0,0,0,71">
-                            <Separator Height="24" Margin="10,45,10,0" VerticalAlignment="Top"/>
-                            <!-- ALL: Intensity Setting -->
-                            <Label Content="Intensity" HorizontalAlignment="Left" Margin="10,69,0,0" VerticalAlignment="Top" Width="75" Height="32" FontSize="14" Visibility="{Binding ShowCPUOptions, Converter={StaticResource InvertedBoolToVisibilityConverter}}"/>
-                            <xctk:IntegerUpDown Margin="90,74,198,0"  Height="23" VerticalAlignment="Top" Minimum="0" Maximum="100" DefaultValue="0"  Value="{Binding IntensityInput}" ValueChanged="IntensityInput_ValueChanged" Visibility="{Binding ShowCPUOptions, Converter={StaticResource InvertedBoolToVisibilityConverter}}" IsEnabled="{Binding EnableOptions}"/>
-                            <Label Content="(0 is auto)" Margin="295,70,10,0" FontSize="12" Height="32" VerticalAlignment="Top" Visibility="{Binding ShowCPUOptions, Converter={StaticResource InvertedBoolToVisibilityConverter}}"/>
-                            <!-- ALL: Custom Parameters -->
-                            <Label Content="Custom Parameters" HorizontalAlignment="Left" Margin="10,106,0,0" VerticalAlignment="Top" Width="140" Height="32" FontSize="14"/>
-                            <TextBox Height="22" Margin="155,110,10,0" VerticalAlignment="Top" AcceptsReturn="False" MaxLines="1" TextWrapping="NoWrap" Text="{Binding CustomParameters}" TextChanged="CustomParametersInput_ValueChanged" IsEnabled="{Binding EnableOptions}"/>
-
-                            <!-- CPU: Use opt miner -->
-                            <CheckBox Margin="10,143,10,0" FontSize="14" Height="32" VerticalAlignment="Top" Checked="UseAlternateMiner_Checked" Unchecked="UseAlternateMiner_Unchecked" IsChecked="{Binding UseAlternateMiner}">
-                                <CheckBox.Style>
-                                    <Style TargetType="{x:Type CheckBox}">
-                                        <Setter Property="Visibility" Value="Hidden" />
-                                        <Style.Triggers>
-                                            <MultiDataTrigger>
-                                                <MultiDataTrigger.Conditions>
-                                                    <Condition Binding="{Binding Path=ShowCPUOptions}" Value="True" />
-                                                    <Condition Binding="{Binding Path=ShowALTOptions}" Value="False" />
-                                                </MultiDataTrigger.Conditions>
-                                                <Setter Property="Visibility" Value="Visible" />
-                                            </MultiDataTrigger>
-                                        </Style.Triggers>
-                                    </Style>
-                                </CheckBox.Style>
-                                <CheckBox.Content>
-                                    <TextBlock Text="Use cpuminer-opt (cpu_win_alt)"/>
-                                </CheckBox.Content>
-                            </CheckBox>
-                        </Grid>
+                        <StackPanel Margin="0,69,0,71">
+                            <StackPanel.Resources>
+                                <Style TargetType="{x:Type Grid}">
+                                    <Setter Property="Margin" Value="10,0,10,5"/>
+                                </Style>
+                            </StackPanel.Resources>
+                            <Grid Visibility="{Binding ShowIntensity, Converter={StaticResource BoolToVisibilityConverter}}">
+                                <!-- GPU: Intensity Setting -->
+                                <Label Content="Intensity:" HorizontalAlignment="Left" Margin="0,0,0,0" Width="75" FontSize="14"/>
+                                <xctk:IntegerUpDown Margin="80,5,200,5" Minimum="0" Maximum="100" DefaultValue="0"  Value="{Binding IntensityInput}" ValueChanged="IntensityInput_ValueChanged" IsEnabled="{Binding EnableOptions}"/>
+                                <Label Content="(0 is auto)" Margin="295,0,10,0" FontSize="12"/>
+                            </Grid>
+                            <Grid>
+                                <!-- ALL: Custom Parameters -->
+                                <Label Content="Custom Parameters:" HorizontalAlignment="Left" Margin="0,0,0,0" Width="140" FontSize="14"/>
+                                <TextBox Margin="145,5,10,5" AcceptsReturn="False" MaxLines="1" TextWrapping="NoWrap" Text="{Binding CustomParameters}" TextChanged="CustomParametersInput_ValueChanged" IsEnabled="{Binding EnableOptions}"/>
+                            </Grid>
+                            <Grid Visibility="{Binding ShowCPUOpt, Converter={StaticResource BoolToVisibilityConverter}}">
+                                <!-- CPU: Use opt miner -->
+                                <Label HorizontalAlignment="Left" Margin="0,0,0,0" Width="210" FontSize="14">
+                                    <TextBlock Text="Use cpuminer-opt (cpu_win_alt):"/>
+                                </Label>
+                                <CheckBox Margin="215,8,0,5" Checked="UseAlternateMiner_Checked" Unchecked="UseAlternateMiner_Unchecked" IsChecked="{Binding UseAlternateMiner}"/>
+                            </Grid>
+                        </StackPanel>
                         <TextBlock Text="{Binding InfoText}" Margin="10,0,10,39" VerticalAlignment="Bottom" Height="32" FontSize="14" Visibility="{Binding InfoText, Converter={StaticResource StringToBoolConverter}}"/>
                         <Button Content="Uninstall Miner" Margin="10,0,246,10" Height="24" VerticalAlignment="Bottom" FontSize="14" Click="UninstallMinerButton_Click" IsEnabled="{Binding EnableOptions}"/>
                         <Button Content="Reset to Defaults" Margin="246,0,10,10" Height="24" VerticalAlignment="Bottom" FontSize="14" Click="ResetDefaultsButton_Click" IsEnabled="{Binding EnableOptions}"/>

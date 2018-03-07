@@ -57,33 +57,33 @@ namespace EasyGarlic {
             }
         }
 
-        private bool showCPUOptions;
-        public bool ShowCPUOptions
+        private bool showIntensity;
+        public bool ShowIntensity
         {
             get
             {
-                return showCPUOptions;
+                return showIntensity;
             }
             set
             {
-                showCPUOptions = value;
+                showIntensity = value;
 
-                OnPropertyChanged(nameof(ShowCPUOptions));
+                OnPropertyChanged(nameof(ShowIntensity));
             }
         }
 
-        private bool showALTOptions;
-        public bool ShowALTOptions
+        private bool showCPUOpt;
+        public bool ShowCPUOpt
         {
             get
             {
-                return showALTOptions;
+                return showCPUOpt;
             }
             set
             {
-                showALTOptions = value;
+                showCPUOpt = value;
 
-                OnPropertyChanged(nameof(ShowALTOptions));
+                OnPropertyChanged(nameof(ShowCPUOpt));
             }
         }
 
@@ -247,11 +247,11 @@ namespace EasyGarlic {
                 CustomParameters = selectedMiner.Value.customParameters;
                 UseAlternateMiner = selectedMiner.Value.usingAlt;
 
-                // Use CPU view if cpu
-                ShowCPUOptions = (selectedMiner.Value.type == "cpu");
+                // Show intensity for non cpu miners
+                ShowIntensity = (selectedMiner.Value.type != "cpu");
 
                 // Use ALT view if alt
-                ShowALTOptions = selectedMiner.Value.alt;
+                ShowCPUOpt = (selectedMiner.Value.type == "cpu" && !selectedMiner.Value.alt);
             }
             else
             {
@@ -297,7 +297,6 @@ namespace EasyGarlic {
             {
                 // Disable everything
                 (sender as ComboBox).SelectedIndex = -1;
-                ShowCPUOptions = false;
             }
 
             LoadMiningView(selectedIndex);
