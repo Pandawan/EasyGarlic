@@ -20,15 +20,14 @@ namespace EasyGarlic {
         // Saved GRLC address to autofill data
         public string savedAddress;
 
+        // Saved Pool to autofill data
+        public PoolData savedPool;
+
         // Whether or not to open the debug console automaticall on start
         public bool openConsole;
 
         // Currently installed miners
         public Dictionary<string, Miner> installed = new Dictionary<string, Miner>();
-
-        // TODO: Make SavedPool (currently it's just a value that's not used)
-        // Could do that by saving a PoolData object on MainWindow and use those values whenever Custom is selected (rather than editing the one from the List)
-        private PoolData savedPool;
 
         public bool Exists()
         {

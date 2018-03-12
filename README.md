@@ -3,7 +3,6 @@ An easy to use Garlicoin Miner
 
 ## TODO
 - Autosave pool settings
-- Add a dynamic grid/view for Advanced Mining instead of each component having a specific position and swapping visibility
 - Add CPU temp 
 - Make new logo & icons
 - Display more information when mining (pool, pool's data...)

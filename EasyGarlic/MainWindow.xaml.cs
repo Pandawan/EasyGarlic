@@ -21,6 +21,8 @@ namespace EasyGarlic {
         private SettingsWindow settingsWindow;
         public OutputWindow outputWindow;
 
+        private bool initializing;
+
         public MainWindow()
         {
             InitializeComponent();
@@ -31,6 +33,7 @@ namespace EasyGarlic {
 
         private async void MainWindow_Loaded(object sender, RoutedEventArgs e)
         {
+            initializing = true;
             headerLogger.Info("");
 
             // Setup Loading text
@@ -124,14 +127,27 @@ namespace EasyGarlic {
             // Add Custom item to the Pool List
             PoolList.Add(PoolData.Custom);
 
+            // Select Pool List Item if LocalData.savedPool is set
+            if (linker.minerManager.data.savedPool != null)
+            {
+                PoolData saved = linker.minerManager.data.savedPool;
+                int index = saved.id;
+
+                // If that object is actually a custom
+                if (saved.name == "Custom")
+                {
+                    // Use it as a custom (last index)
+                    index = PoolList.Count - 1;
+                    PoolList[index].stratum = saved.stratum;
+                }
+
+                PoolListIndex = index;
+                logger.Info("Using saved pool: " + saved);
+            }
+
             // Check Saved Address
             AddressInput = linker.minerManager.GetSavedAddress();
             logger.Info("Using saved address: " + AddressInput);
-
-            // Load different mining tabs
-
-            //tabDynamic.DataContext = MiningTabs;
-            //MiningTabs.Add(new MiningTab() { Header = "HEADER", id = "Nvidia", Data = new MiningTabData() { HashrateText = "100 AYY" } });
 
             logger.Info("Miners Installed: " + String.Join(", ", linker.minerManager.data.installed.Keys.ToArray()));
 
@@ -145,6 +161,7 @@ namespace EasyGarlic {
 
             // Tell it we're done
             logger.Info("Finished Loading.");
+            initializing = false;
         }
 
         private async void MainWindow_Closing(object sender, CancelEventArgs e)
@@ -320,6 +337,21 @@ namespace EasyGarlic {
             }
         }
 
+        private int poolListIndex;
+        public int PoolListIndex
+        {
+            get
+            {
+                return poolListIndex;
+            }
+            set
+            {
+                poolListIndex = value;
+
+                OnPropertyChanged(nameof(PoolListIndex));
+            }
+        }
+
         private PoolData lastPoolDataValue;
         private List<PoolData> poolList;
         public List<PoolData> PoolList
@@ -443,7 +475,7 @@ namespace EasyGarlic {
             string poolInfo = (lastPoolDataValue.id == -1 ? "Custom Pool (" + lastPoolDataValue.stratum + ")" : lastPoolDataValue.name + " (" + PoolInput.Trim() + ")");
             MiningInfoText = "Mining on " + poolInfo;
             logger.Info("Starting miners on " + poolInfo);
-            
+
             await linker.minerManager.StartMining(AddressInput.Trim(), PoolInput.Trim(), startingProgress);
 
             EnableAdvanced = true;
@@ -491,7 +523,7 @@ namespace EasyGarlic {
                 // Change info text to update with every steps' info
                 InfoText = String.Join(", ", progressSteps.Values);
             });
-            
+
             ReadyToStart = false;
             EnableAdvanced = false;
 
@@ -569,8 +601,6 @@ namespace EasyGarlic {
                 // If it's the same value, don't change, it might override custom pool input
                 if (lastPoolDataValue != null && lastPoolDataValue.id == poolData.id) return;
 
-                logger.Info("Using pool: " + poolData);
-
                 // If it's a custom, show the pool input
                 if (poolData.name == "Custom")
                 {
@@ -585,6 +615,14 @@ namespace EasyGarlic {
                 }
 
                 lastPoolDataValue = poolData;
+
+                // Don't want to override the saved pool on initialization because it can't be changed  by user at that point
+                if (!initializing)
+                {
+                    logger.Info("Using pool: " + poolData);
+                    // Save the selected pool as the savedPool for auto-select
+                    linker.minerManager.data.savedPool = poolData;
+                }
             }
         }
 

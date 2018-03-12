@@ -68,7 +68,7 @@
                 <TextBox x:Name="addressInputBox" Height="24" Margin="130,10,50,0" TextWrapping="Wrap" VerticalAlignment="Top" FontSize="14" Text="{Binding AddressInput}" AcceptsReturn="False" MaxLines="1" TextChanged="AddressInputBox_TextChanged"/>
                 <Label Content="Pool:" Margin="10,40,0,0" VerticalAlignment="Top" FontSize="14" HorizontalAlignment="Left" Width="115"/>
                 <TextBox x:Name="poolInputBox" Height="24" MinWidth="100" Margin="313,45,50,0" TextWrapping="Wrap" VerticalAlignment="Top" FontSize="14" Text="{Binding PoolInput}" AcceptsReturn="False" MaxLines="1" Visibility="{Binding ShowCustomPool, Converter={StaticResource BoolToVisibilityConverter}}"/>
-                <ComboBox x:Name="poolListCombo" MinWidth="100" Margin="130,45,266,0" VerticalAlignment="Top" Height="24" ItemsSource="{Binding Path=PoolList}" DisplayMemberPath="name" SelectionChanged="PoolListCombo_SelectionChanged" />
+                <ComboBox x:Name="poolListCombo" MinWidth="100" Margin="130,45,266,0" VerticalAlignment="Top" Height="24" ItemsSource="{Binding Path=PoolList}" DisplayMemberPath="name" SelectionChanged="PoolListCombo_SelectionChanged" SelectedIndex="{Binding PoolListIndex}"/>
                 <Grid Margin="50,100,50,10">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="1*" />

@@ -7,8 +7,7 @@ using System.Windows.Controls;
 using System.Windows.Documents;
 using System.Windows.Media;
 
-namespace EasyGarlic
-{
+namespace EasyGarlic {
     public static class RichTextBoxExtensions {
         public static void AppendText(this RichTextBox box, string text, string color)
         {
