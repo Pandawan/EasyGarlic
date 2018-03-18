@@ -54,6 +54,11 @@ namespace EasyGarlic {
 
         private ConnectionInfo connectionInfo;
         private MiningStatus status;
+
+        /// <summary>
+        /// This client doesn't have a documentation, but you can find the (simple to follow) class here 
+        /// https://github.com/sethcall/async-helper/blob/master/src/AsyncTcpClient/AsyncTcpClient.cs
+        /// </summary>
         private AsyncTcpClient client;
 
         private TaskCompletionSource<bool> tcs;
