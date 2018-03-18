@@ -10,7 +10,7 @@ namespace EasyGarlic {
     public class Command {
 
         private static Logger logger = LogManager.GetLogger("CommandLogger");
-
+        
         private ProcessStartInfo startInfo;
         private Process cmd;
         private TaskCompletionSource<bool> tcs;
@@ -25,6 +25,9 @@ namespace EasyGarlic {
         private Dictionary<string, int> hashratesSeen = new Dictionary<string, int>();
 
         private string id;
+
+        public delegate Task CommandEvent();
+        public CommandEvent onStopped;
 
         public void Setup(string _id, bool hide)
         {
@@ -75,7 +78,7 @@ namespace EasyGarlic {
             cmd.StandardInput.WriteLineAsync(commandToRun);
 
             logger.Debug("Running command " + commandToRun);
-
+            
             return tcs.Task;
         }
 
@@ -97,6 +100,12 @@ namespace EasyGarlic {
                     KillProcessAndChildren(cmd.Id);
                 }
             });
+
+            if (onStopped != null)
+            {
+                await onStopped.Invoke();
+                onStopped = null;
+            }
 
             logger.Info("Command Processes for " + id + " are Stopped");
         }
@@ -273,6 +282,14 @@ namespace EasyGarlic {
             if (!calledStop)
             {
                 logger.Error("Unexpectedly stopped process " + id);
+            }
+
+            // If onExit hasn't been called yet, call it now
+            if (onStopped != null)
+            {
+                Task task = Task.Run(async () => await onStopped.Invoke());
+                task.RunSynchronously();
+                onStopped = null;
             }
 
             tcs.SetResult(true);

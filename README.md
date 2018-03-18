@@ -2,13 +2,13 @@
 An easy to use Garlicoin Miner
 
 ## TODO
-- Autosave pool settings
-- Add CPU temp 
+- **Fix API Connect system, getting an error and I can't even catch it to check what's wrong**
+- Add CPU temp (requires API system)
 - Make new logo & icons
 - Display more information when mining (pool, pool's data...)
 - Add more error checking (connection errors, downloading errors)
-- Add auto sending of log when app crashes (will also need computer's info to analyze data)
-- Add some sort of data analysis tool (user count, download count...)
+- Add some sort of data analysis tool with Google Analytics (user count, download count, daily usage, usage length, if users use advanced mode...)
+- Add auto sending of log when app crashes maybe through Google Analytics (will also need computer's info to analyze data)
 - Change Release URL to GitHub Releases (instead of local path)
 - Add AMD support (need and AMD card to test and contact API system)
 - Remove Xceed WPF (too many DLLs)

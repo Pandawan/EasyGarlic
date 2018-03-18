@@ -32,6 +32,18 @@ namespace EasyGarlic {
             // TODO: Save user data such as pool, address, and which miners were enabled previously
         }
 
+        public void DOIT()
+        {
+            Miner[] miner = data.installed.Values.ToArray();
+            for (int i = 0; i < miner.Length; i++)
+            {
+                if (miner[i].status == MinerStatus.Mining)
+                {
+                    miner[i].apiConnect.SendRequest(new APIConnect.Request("", ""));
+                }
+            }
+        }
+
         public async Task StartMining(string address, string pool, IProgress<MiningStatus> progress)
         {
             // TODO: Add system so that each GPU has its own mining status and therefore, its own miner info
@@ -66,10 +78,18 @@ namespace EasyGarlic {
                 }
 
                 string commandToRun = GetMinerCommand(address, pool, miner);
+
                 // Setup Command Process
                 miner.miningProcess = new Command();
                 miner.miningProcess.Setup(minersToUse[i], true);
                 miner.miningProcess.SetStatus(minerStatus);
+
+                // Setup API Connection
+                miner.apiConnect = new APIConnect(GetAPIConnectURL(miner));
+                miner.apiConnect.SetStatus(minerStatus);
+
+                // When miner exits, stop the API connection
+                miner.miningProcess.onStopped = miner.apiConnect.Stop;
 
                 // Set Status as Mining
                 miner.status = MinerStatus.Mining;
@@ -77,8 +97,9 @@ namespace EasyGarlic {
                 // Run the mining command
                 miningTasks.Add(miner.miningProcess.Run(commandToRun));
 
-                // TODO: Add support for multiple GPUs to work together (GPU list by ID and get GPU type, then start Command for each of them)
-                // TODO: Add a system to return Progress reports to display hashrate + balance + blocks mined...
+                // TODO: See APIConnect's error
+                // Start the data fetching/api connection
+                // miningTasks.Add(miner.apiConnect.SetupConnection());
             }
 
             status.info = "Mining...";
@@ -381,6 +402,18 @@ namespace EasyGarlic {
             command += m.customParameters;
 
             return command;
+        }
+
+        public APIConnect.ConnectionInfo GetAPIConnectURL(Miner m)
+        {
+            if (m.type == "amd")
+                return new APIConnect.ConnectionInfo("127.0.0.1", 4028);
+            else if (m.type == "cpu")
+                return new APIConnect.ConnectionInfo("127.0.0.1", 4048);
+            else if (m.type == "nvidia")
+                return new APIConnect.ConnectionInfo("127.0.0.1", 4068);
+
+            return new APIConnect.ConnectionInfo();
         }
 
         public string GetCurrentPlatform()

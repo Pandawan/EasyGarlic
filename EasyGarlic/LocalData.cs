@@ -26,6 +26,9 @@ namespace EasyGarlic {
         // Whether or not to open the debug console automaticall on start
         public bool openConsole;
 
+        // How long (in ms) to wait between every status/data refresh
+        public int refreshRate;
+
         // Currently installed miners
         public Dictionary<string, Miner> installed = new Dictionary<string, Miner>();
 

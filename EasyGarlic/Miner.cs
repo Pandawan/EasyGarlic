@@ -38,6 +38,9 @@ namespace EasyGarlic {
         [JsonIgnore]
         public Command miningProcess;
 
+        [JsonIgnore]
+        public APIConnect apiConnect;
+
         public string GetID()
         {
             return type + "_" + platform + (alt ? "_alt" : "");
