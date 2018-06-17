@@ -1,5 +1,5 @@
-﻿using AsyncHelper;
-using NLog;
+﻿using NLog;
+using WatsonTcp;
 using System;
 using System.Net;
 using System.Net.Sockets;
@@ -63,13 +63,12 @@ namespace EasyGarlic {
 
         private int refreshRate = 5000;
         private CancellationTokenSource cts;
-        private CancellationTokenSource receiveCancel;
 
         /// <summary>
         /// This client doesn't have a documentation, but you can find the (simple to follow) class here 
         /// https://github.com/sethcall/async-helper/blob/master/src/AsyncTcpClient/AsyncTcpClient.cs
         /// </summary>
-        private AsyncTcpClient client;
+        private WatsonTcpClient client;
 
         private TaskCompletionSource<bool> tcs;
 
@@ -77,15 +76,43 @@ namespace EasyGarlic {
         {
             logger.Warn("Constructor APIConnect");
             connectionInfo = _connectionInfo;
-            client = new AsyncTcpClient();
             tcs = new TaskCompletionSource<bool>();
             cts = new CancellationTokenSource();
 
             // TODO: Make it work for AMD
         }
 
+        public Task TSetupConnection()
+        {
+            logger.Warn("Connecting to API " + connectionInfo);
+
+            if (connectionInfo.IsValid())
+            {
+                Task.Run(async () =>
+                {
+                    // Wait a bit for the API to start
+                    await Task.Delay(refreshRate, cts.Token);
+
+                    // Create new TCP client
+                    client = new WatsonTcpClient(connectionInfo.host, connectionInfo.port, Client_OnConnected, Client_OnDisconnected, Client_OnMessageReceived, false);
+                    
+                    // Start refresh loop
+                    // await RefreshData(cts.Token);
+                    await SendRequest(new Request("summary", ""));
+
+                    logger.Warn("Done!");
+                });
+            }
+
+            logger.Warn("AYAYAY");
+
+            return tcs.Task;
+        }
+
         public Task SetupConnection()
         {
+            return TSetupConnection();
+
             logger.Warn("Connecting to API " + connectionInfo);
 
             if (connectionInfo.IsValid())
@@ -99,9 +126,7 @@ namespace EasyGarlic {
 
                     try
                     {
-                        await client.ConnectAsync(connectionInfo.host, connectionInfo.port, connectionInfo.ssl, cts.Token);
-                        client.OnDisconnected += Client_OnDisconnected;
-
+                        client = new WatsonTcpClient(connectionInfo.host, connectionInfo.port, Client_OnConnected, Client_OnDisconnected, Client_OnMessageReceived, true);
                         await RefreshData(cts.Token);
 
                     }
@@ -118,69 +143,98 @@ namespace EasyGarlic {
             return tcs.Task;
         }
 
-        private void Client_OnDisconnected(object sender, EventArgs e)
+        private bool Client_OnConnected()
+        {
+            logger.Warn("Client connected!");
+            return true;
+        }
+
+        private bool Client_OnDisconnected()
         {
             logger.Warn("Client disconnected!");
+            return true;
+        }
+
+        private bool Client_OnMessageReceived(byte[] data)
+        {
+            logger.Warn("Received message " + Encoding.ASCII.GetString(data));
+            return true;
+        }
+
+        public void TRefreshData(CancellationToken cancellationToken)
+        {
+            while (!cancellationToken.IsCancellationRequested)
+            {
+                    Thread.Sleep(refreshRate);
+                    TSendRequest(new Request("summary", ""));
+            }
         }
 
         public async Task RefreshData(CancellationToken cancellationToken)
         {
-            while (true)
+            while (!cancellationToken.IsCancellationRequested)
             {
-                await Task.Delay(refreshRate, cancellationToken);
-                await SendRequest(new Request("summary", ""));
-
-                if (cancellationToken.IsCancellationRequested)
-                    break;
+                try
+                {
+                    await Task.Delay(refreshRate, cancellationToken);
+                    await SendRequest(new Request("summary", ""));
+                }
+                catch (TaskCanceledException e) { }
             }
         }
 
-        public async Task Stop()
+        public void TSendRequest(APIConnect.Request request)
         {
-            logger.Warn("Sent Stop to APIConnect");
+            logger.Warn("Sending request " + request);
 
-            if (client.IsConnected)
+            logger.Warn("Is client connected? " + client.IsConnected());
+
+            // If client isn't connected, no point in trying to send
+            if (!client.IsConnected())
             {
-                cts.Cancel();
-                receiveCancel.Cancel();
-                await client.CloseAsync();
+                logger.Warn("Could not send request. Client is not connected.");
+                return;
             }
 
-            tcs.SetResult(true);
+            bool val = client.Send(Encoding.ASCII.GetBytes(request.command));
+            logger.Warn("Output " + val);
         }
 
         public async Task SendRequest(APIConnect.Request request)
         {
             logger.Warn("Sending request " + request);
 
-            logger.Warn("Is client connected? " + client.IsConnected);
+            logger.Warn("Is client connected? " + client.IsConnected());
 
             // If client isn't connected, no point in trying to send
-            if (!client.IsConnected)
+            if (!client.IsConnected())
             {
                 logger.Warn("Could not send request. Client is not connected.");
                 return;
             }
 
-            // in json  string json = "{\"command\":\"" + request.command + "\",\"parameter\":\"" + request.parameter + "\"}";
-
-            await client.SendAsync(Encoding.ASCII.GetBytes(request.command));
-            receiveCancel = new CancellationTokenSource();
-            client.OnDataReceived += Client_OnDataReceived;
-            try
-            {
-                await client.Receive(receiveCancel.Token);
-            }
-            // Ignore token cancellation
-            catch (Exception e) when (e is OperationCanceledException || e is InvalidOperationException) { }
-            
+            bool val = await client.SendAsync(Encoding.ASCII.GetBytes(request.command));
+            logger.Warn("Output " + val);
         }
 
-        private void Client_OnDataReceived(object sender, byte[] e)
+        public void Stop()
         {
-            logger.Warn("Received " + Encoding.ASCII.GetString(e));
-            // After receiving cancel immediately, need to send a new request
-            receiveCancel.Cancel();
+            logger.Warn("Sent Stop to APIConnect");
+
+            if (cts != null)
+            {
+                // Cancel just in case
+                cts.Cancel();
+                logger.Warn(cts.IsCancellationRequested);
+            }
+
+            // Dispose of connection if still up
+            if (client.IsConnected())
+            {
+                client.Dispose();
+            }
+
+            tcs.SetResult(true);
         }
 
         public void SetStatus(MiningStatus _status)

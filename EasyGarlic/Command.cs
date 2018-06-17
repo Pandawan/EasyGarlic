@@ -26,9 +26,8 @@ namespace EasyGarlic {
 
         private string id;
 
-        public delegate Task CommandEvent();
+        public delegate void CommandEvent();
         public CommandEvent onStopped;
-        public CommandEvent onReady;
 
         public void Setup(string _id, bool hide)
         {
@@ -282,12 +281,12 @@ namespace EasyGarlic {
             // If onExit hasn't been called yet, call it now
             if (onStopped != null)
             {
-                Task task = Task.Run(async () => await onStopped.Invoke());
-                task.ContinueWith((t) =>
-                {
-                    onStopped = null;
-                    tcs.SetResult(true);
-                });
+                // Call Stop Event
+                onStopped();
+                // Clear it
+                onStopped = null;
+                // End task
+                tcs.SetResult(true);
             }
             else
             {
