@@ -372,5 +372,10 @@ namespace EasyGarlic {
         {
             parentWindow.OpenDebugConsole();
         }
+
+        private void ConnectButton_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
     }
 }

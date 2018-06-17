@@ -3,6 +3,7 @@ using NLog.Common;
 using NLog.Config;
 using NLog.Targets;
 using System;
+using System.Collections.Generic;
 
 namespace EasyGarlic {
     public class NLogText : Target {
@@ -18,7 +19,7 @@ namespace EasyGarlic {
             //SimpleConfigurator.ConfigureForTargetLogging (this, level); //use this if you are intending to use only NlogMemoryTarget  rule
         }
 
-        protected override void Write(AsyncLogEventInfo[] logEvents)
+        protected override void Write(IList<AsyncLogEventInfo> logEvents)
         {
             foreach (var logEvent in logEvents)
             {

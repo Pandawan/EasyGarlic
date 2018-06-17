@@ -34,14 +34,16 @@ namespace EasyGarlic {
 
         public void DOIT()
         {
+            List<Task> tasks = new List<Task>();
             Miner[] miner = data.installed.Values.ToArray();
             for (int i = 0; i < miner.Length; i++)
             {
                 if (miner[i].status == MinerStatus.Mining)
                 {
-                    miner[i].apiConnect.SendRequest(new APIConnect.Request("", ""));
+                    tasks.Add(miner[i].apiConnect.SendRequest(new APIConnect.Request("", "")));
                 }
             }
+            Task.WaitAll(tasks.ToArray());
         }
 
         public async Task StartMining(string address, string pool, IProgress<MiningStatus> progress)
@@ -97,9 +99,8 @@ namespace EasyGarlic {
                 // Run the mining command
                 miningTasks.Add(miner.miningProcess.Run(commandToRun));
 
-                // TODO: See APIConnect's error
                 // Start the data fetching/api connection
-                // miningTasks.Add(miner.apiConnect.SetupConnection());
+                miningTasks.Add(miner.apiConnect.SetupConnection());
             }
 
             status.info = "Mining...";
@@ -391,11 +392,17 @@ namespace EasyGarlic {
                 command += "-I " + m.customIntensity;
             }
 
-            // Algorithm is diff on amd
+            // AMD Debug
             if (m.type == "amd")
             {
                 // Add debug for amd
                 command += " --debug ";
+            }
+
+            // Nvidia open API ports
+            if (m.type == "nvidia")
+            {
+                command += "--api-remote --api-allow=0/0";
             }
 
             // Add custom parameters last

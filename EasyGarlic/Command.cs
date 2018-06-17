@@ -28,6 +28,7 @@ namespace EasyGarlic {
 
         public delegate Task CommandEvent();
         public CommandEvent onStopped;
+        public CommandEvent onReady;
 
         public void Setup(string _id, bool hide)
         {
@@ -100,12 +101,6 @@ namespace EasyGarlic {
                     KillProcessAndChildren(cmd.Id);
                 }
             });
-
-            if (onStopped != null)
-            {
-                await onStopped.Invoke();
-                onStopped = null;
-            }
 
             logger.Info("Command Processes for " + id + " are Stopped");
         }
@@ -288,11 +283,16 @@ namespace EasyGarlic {
             if (onStopped != null)
             {
                 Task task = Task.Run(async () => await onStopped.Invoke());
-                task.RunSynchronously();
-                onStopped = null;
+                task.ContinueWith((t) =>
+                {
+                    onStopped = null;
+                    tcs.SetResult(true);
+                });
             }
-
-            tcs.SetResult(true);
+            else
+            {
+                tcs.SetResult(true);
+            }
         }
 
         /// <summary>
